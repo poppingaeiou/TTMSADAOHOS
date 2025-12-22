@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>จองคิวออนไลน์ รพ.สะเดา</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    /* --- CSS Variables & Reset --- */
+    :root { 
+        --primary: #2e7d32; 
+        --primary-dark: #1b5e20; 
+        --bg-color: #f8fafc; 
+        --radius: 20px; 
+        --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05); 
+        --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.08); 
+        --wellness-primary: #D4AF37; 
+        --wellness-dark: #AA8C2C;
+        --wellness-text: #423818;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Prompt', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; min-height: 100vh; color: #333; position: relative; overflow-x: hidden; }
+    body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://img5.pic.in.th/file/secure-sv1/52083c99d955995f60b4a9dd8448920a.png') no-repeat center center; background-size: cover; opacity: 0.04; z-index: -1; filter: grayscale(50%); pointer-events: none; }
+    .hidden { display: none !important; }
+    .fade-in { animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    /* --- Layout & Components --- */
+    .home-container { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 40px; }
+    .hero-banner { width: 100%; height: 280px; background-image: url('https://img2.pic.in.th/pic/2e56ebb3c838125fd55c9db5dcd51baf.png'); background-size: cover; background-position: center; position: relative; border-radius: 0 0 30px 30px; overflow: hidden; box-shadow: var(--shadow-md); margin-bottom: -40px; z-index: 1; }
+    .hero-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(46,125,50,0.3), rgba(27,94,32,0.85)); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; color: white; backdrop-filter: blur(1px); }
+    .main-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); background: white; border-radius: 50%; padding: 2px; }
+    .home-title h1 { font-size: 1.5rem; font-weight: 700; margin: 5px 0 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .home-title h2 { font-size: 0.9rem; font-weight: 400; margin: 0; opacity: 0.9; }
+    .status-pill { background: rgba(255,255,255,0.2); padding: 6px 16px; border-radius: 20px; font-size: 0.8rem; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; gap: 6px; }
+    
+    .menu-container { width: 100%; padding: 0 20px; z-index: 2; }
+    .dept-card { background: white; border-radius: var(--radius); padding: 24px; margin-bottom: 16px; display: flex; align-items: center; cursor: pointer; box-shadow: var(--shadow-md); border: 1px solid rgba(255,255,255,0.8); position: relative; overflow: hidden; transition: all 0.3s; }
+    .dept-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+    .dept-card::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; }
+    
+    .card-ttm::after { background: #2e7d32; }
+    .card-tcm::after { background: #e53935; }
+    .card-postpartum::after { background: #ec4899; }
+    .card-steam::after { background: #0288d1; }
+    
+    .card-wellness { border: 1px solid #F8E79B; background: linear-gradient(135deg, #fff 50%, #fffcf2 100%); }
+    .card-wellness::after { background: linear-gradient(to bottom, #D4AF37, #AA8C2C); }
+    .card-wellness h3 { color: #AA8C2C !important; }
+    .card-wellness:hover .arrow-btn { background: #D4AF37; }
+
+    .dept-icon { width: 60px; height: 60px; border-radius: 50%; margin-right: 20px; object-fit: cover; border: 4px solid #f1f5f9; }
+    .dept-info h3 { margin: 0 0 6px 0; font-size: 1.2rem; font-weight: 700; color: #1e293b; }
+    .dept-info p { margin: 0; font-size: 0.85rem; color: #64748b; line-height: 1.4; }
+    .arrow-btn { margin-left: auto; width: 36px; height: 36px; border-radius: 50%; background: #f8fafc; display: flex; align-items: center; justify-content: center; color: #94a3b8; }
+    .dept-card:hover .arrow-btn { color: white; }
+    .card-ttm:hover .arrow-btn { background: #2e7d32; }
+    .card-tcm:hover .arrow-btn { background: #e53935; }
+    .card-postpartum:hover .arrow-btn { background: #ec4899; }
+    .card-steam:hover .arrow-btn { background: #0288d1; }
+
+    .info-card { margin-top: 20px; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid #e2e8f0; }
+    .info-img { width: 100%; height: 160px; object-fit: cover; }
+    .info-content { padding: 15px 20px; }
+    .info-content h4 { margin: 0 0 5px; color: #1e293b; font-size: 1rem; }
+    .info-content p { margin: 0; color: #64748b; font-size: 0.85rem; }
+
+    /* --- Dashboard & Slots --- */
+    .top-section { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 15px 15px 25px 15px; position: sticky; top: 0; z-index: 100; border-radius: 0 0 30px 30px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3); transition: background 0.5s ease; }
+    .back-btn { position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.2); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(4px); }
+    .header-content { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px; margin-top: 5px; }
+    .app-logo { width: 50px; height: 50px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.9); background: white; object-fit:contain; }
+    .header-titles h1 { margin: 0; font-size: 1.3rem; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .live-clock { text-align: center; background: rgba(0,0,0,0.15); border-radius: 20px; padding: 4px 14px; font-size: 0.8rem; margin: 10px auto 15px; width: fit-content; display: flex; gap: 6px; align-items: center; color: rgba(255,255,255,0.95); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2); }
+    
+    .date-scroller { display: flex; overflow-x: auto; padding-bottom: 5px; gap: 10px; scrollbar-width: none; margin: 0 5px; }
+    .date-chip { --day-color: #555; background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); color: white; border-radius: 16px; padding: 10px 0; min-width: 65px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; transition: all 0.3s; position: relative; overflow: hidden; }
+    .date-chip small { font-size: 0.75rem; display: block; margin-bottom: 4px; opacity: 0.9; }
+    .date-chip span { font-size: 1.2rem; display: block; line-height: 1; font-weight: 700; }
+    .date-chip.active { background: white; color: var(--day-color); transform: scale(1.1); font-weight: bold; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
+    .date-chip.active::after { content:''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: var(--day-color); }
+
+    .container { max-width: 600px; margin: 0 auto; padding: 0 15px 80px; }
+    .selected-date-header { font-size: 1.1rem; font-weight: 700; color: #334155; padding: 25px 5px 15px; display: flex; align-items: center; }
+    .header-bar { width: 6px; height: 24px; border-radius: 4px; margin-right: 12px; background-color: var(--primary); }
+    .grid-container { display: flex; flex-direction: column; gap: 14px; }
+    
+    .slot-card { display: flex; justify-content: space-between; align-items: center; background: white; border-radius: 18px; padding: 18px 20px; box-shadow: var(--shadow-sm); border: 1px solid #f1f5f9; position: relative; overflow: hidden; opacity: 0; animation: slideUp 0.3s ease-out forwards; min-height: 75px; transition: transform 0.2s; }
+    .slot-card:active { transform: scale(0.98); }
+    .slot-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; }
+    .is-available::before { background: #4caf50; }
+    .is-full::before { background: #ef4444; }
+
+    .gender-male { background: #e3f2fd !important; border-color: #90caf9 !important; }
+    .gender-male::before { background: #1976d2 !important; }
+    .gender-male .icon-status { background: #bbdefb !important; color: #1565c0 !important; }
+    .gender-female { background: #fce4ec !important; border-color: #f48fb1 !important; }
+    .gender-female::before { background: #d81b60 !important; }
+    .gender-female .icon-status { background: #f8bbd0 !important; color: #ad1457 !important; }
+
+    .time-wrap { display: flex; align-items: center; gap: 16px; }
+    .icon-status { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .time-text { font-weight: 700; font-size: 1.1rem; color: #334155; }
+    .is-available .icon-status { background: #e8f5e9; color: #2e7d32; }
+    .is-full .icon-status { background: #fee2e2; color: #c62828; }
+    .status-badge { padding: 6px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; min-width: 70px; text-align: center; }
+    .bg-av { background: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; }
+    .bg-full { background: #fee2e2; color: #b71c1c; border: 1px solid #ffcdd2; }
+
+    /* --- Modal & Inputs --- */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s; backdrop-filter: blur(5px); }
+    .modal-overlay.show { opacity: 1; visibility: visible; }
+    .modal-card { background: white; width: 90%; max-width: 380px; border-radius: 28px; padding: 28px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); transform: translateY(20px); transition: all 0.3s; max-height: 90vh; overflow-y: auto; }
+    .modal-overlay.show .modal-card { transform: translateY(0); }
+    .modal-header { font-size: 1.3rem; font-weight: 700; margin-bottom: 24px; color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .form-group { margin-bottom: 20px; position: relative; }
+    .form-label { display: block; margin-bottom: 8px; font-size: 0.95rem; color: #334155; font-weight: 600; }
+    .form-control { width: 100%; padding: 14px; border: 1px solid #cbd5e1; border-radius: 14px; font-family: 'Prompt', sans-serif; font-size: 1rem; outline: none; background: #f8fafc; }
+    .form-control:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1); }
+    textarea.form-control { resize: none; height: 90px; }
+
+    .custom-select-wrapper { position: relative; user-select: none; }
+    .custom-select { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 14px; background: #f8fafc; cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+    .custom-select:hover { background: white; border-color: var(--primary); }
+    .select-selected { display: flex; align-items: center; gap: 12px; font-weight: 500; color: #333; }
+    .select-img { width: 36px; height: 36px; border-radius: 50%; object-fit: contain; border: 1px solid #ddd; background: #fff; }
+    .select-items { position: absolute; top: 115%; left: 0; right: 0; background: white; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.15); max-height: 260px; overflow-y: auto; z-index: 20; display: none; }
+    .custom-select.open + .select-items { display: block; animation: fadeIn 0.2s; }
+    .select-item { padding: 12px; display: flex; align-items: center; gap: 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; }
+    .select-item:hover { background: #f0fdf4; }
+    .item-img { width: 44px; height: 44px; border-radius: 50%; object-fit: contain; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); background: #fff; }
+    .item-text { font-size: 1rem; color: #334155; }
+
+    .badge-2hr { background: linear-gradient(135deg, #00c853, #64dd17); color: white; font-size: 0.7rem; padding: 3px 8px; border-radius: 12px; margin-left: auto; font-weight: 700; box-shadow: 0 2px 4px rgba(0,200,83,0.3); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .option-2hr-container { margin-top: 15px; padding: 15px; background-color: #fffbeb; border: 2px solid #f59e0b; border-radius: 16px; display: none; animation: popIn 0.3s; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.15); }
+    .option-2hr-label { display: flex; align-items: center; gap: 12px; cursor: pointer; color: #b45309; font-weight: 700; font-size: 1rem; margin: 0; }
+    .option-2hr-note { font-size: 0.85rem; color: #dc2626; margin-top: 6px; padding-left: 30px; font-weight: 500; }
+    .chk-2hr { width: 20px; height: 20px; accent-color: #f59e0b; cursor: pointer; }
+    @keyframes popIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+
+    .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #cbd5e1; border-radius: 0 0 14px 14px; max-height: 160px; overflow-y: auto; z-index: 10; box-shadow: 0 10px 20px rgba(0,0,0,0.1); display: none; }
+    .autocomplete-item { padding: 10px 14px; cursor: pointer; font-size: 0.95rem; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 8px; }
+    .autocomplete-item:hover { background: #f8fafc; color: var(--primary); }
+
+    .btn-autofill { font-size: 0.85rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; display: none; align-items: center; gap: 6px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3); transition: transform 0.2s, box-shadow 0.2s; }
+    .btn-autofill:hover { transform: translateY(-2px); box-shadow: 0 6px 12px -1px rgba(245, 158, 11, 0.4); }
+    .btn-autofill:active { transform: scale(0.95); }
+
+    .btn-group { display: flex; gap: 14px; margin-top: 30px; }
+    .btn { flex: 1; padding: 14px; border: none; border-radius: 14px; font-size: 1rem; cursor: pointer; font-family: 'Prompt', sans-serif; transition: 0.2s; font-weight: 600; }
+    .btn-cancel { background: #f1f5f9; color: #64748b; }
+    .btn-cancel:hover { background: #e2e8f0; }
+    .btn-confirm { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3); }
+    .btn-confirm:active { transform: scale(0.97); }
+
+    .summary-box { background: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; border-left: 6px solid var(--primary); margin-bottom: 24px; }
+    .summary-row { display: flex; margin-bottom: 8px; font-size: 1rem; }
+    .summary-label { flex: 0 0 110px; color: #64748b; font-size: 0.9rem; }
+    .summary-val { flex: 1; color: #1e293b; font-weight: 600; }
+
+    .warning-popup { text-align: center; padding: 15px 5px; }
+    .warning-icon { font-size: 4rem; color: #f59e0b; margin-bottom: 20px; }
+    .warning-text { font-size: 1.1rem; color: #334155; margin-bottom: 30px; line-height: 1.6; }
+
+    .contact-section { background: white; border-radius: var(--radius); padding: 30px; margin-top: 30px; text-align: center; box-shadow: var(--shadow-sm); border: 1px solid #f1f5f9; }
+    .social-btn { display: inline-flex; width: 40px; height: 40px; border-radius: 50%; background: #ddd; color: white; align-items: center; justify-content: center; margin: 0 5px; text-decoration: none; font-size: 1.1rem; transition: transform 0.2s; }
+    .social-btn:hover { transform: translateY(-3px); }
+    .btn-fb { background: #1877F2; } .btn-line { background: #06C755; } .btn-yt { background: #FF0000; } .btn-phone { background: #333; }
+    .mini-loader { font-size: 0.7rem; color: #fff; opacity: 0.7; margin-left: 10px; display: none; }
+    .mini-loader.show { display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .btn-add-patient { background-color: #0288d1; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; }
+    .extra-patient-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; animation: fadeIn 0.3s; }
+    .btn-remove { background: #ef4444; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+  </style>
+</head>
+<body>
+
+  <div id="view-home" class="home-container fade-in">
+    <div class="hero-banner">
+        <div class="hero-overlay">
+            <img src="https://img2.pic.in.th/pic/6f7b352408393a1295f3000e7d9e6754.md.png" class="main-logo">
+            <div class="home-title">
+                <h2>กลุ่มงานการแพทย์แผนไทยและการแพทย์ทางเลือก</h2>
+                <h1>โรงพยาบาลสะเดา</h1>
+                <div class="status-pill"><i class="fas fa-circle" style="color:#4caf50; font-size:0.6rem;"></i> ระบบออนไลน์ 24 ชม.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-container">
+        
+        <div class="dept-card card-ttm" onclick="openApp('ttm')">
+          <img src="https://img2.pic.in.th/pic/619e72dc2124132ccf4620717d4fa58d.md.png" class="dept-icon">
+          <div class="dept-info"><h3>แพทย์แผนไทย</h3><p>นวดรักษา, ประคบ, นวดส่งเสริมฯ</p></div>
+          <div class="arrow-btn"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        
+        <div class="dept-card card-tcm" onclick="openApp('tcm')">
+          <img src="https://img2.pic.in.th/pic/--06d2d95efaba2074.md.png" class="dept-icon">
+          <div class="dept-info"><h3>แพทย์แผนจีน</h3><p>ฝังเข็ม, ครอบแก้ว, ฝังเข็มใบหน้า</p></div>
+          <div class="arrow-btn"><i class="fas fa-chevron-right"></i></div>
+        </div>
+
+        <div class="dept-card card-postpartum" onclick="openApp('postpartum')">
+          <img src="https://img2.pic.in.th/pic/eb06897c542c79b64690c8e794fa84a4.png" class="dept-icon">
+          <div class="dept-info"><h3>บริการหลังคลอด</h3><p>หลังคลอดธรรมชาติ 7 วัน / หลังผ่า 1 เดือน</p></div>
+          <div class="arrow-btn"><i class="fas fa-chevron-right"></i></div>
+        </div>
+
+        <div class="dept-card card-steam" onclick="openApp('steam')">
+          <img src="https://img2.pic.in.th/pic/-3b445847427fcbfd.png" class="dept-icon">
+          <div class="dept-info"><h3>อบไอน้ำสมุนไพร</h3><p>ช่วยการไหลเวียนโลหิต ภูมิแพ้ นอนไม่หลับ</p></div>
+          <div class="arrow-btn"><i class="fas fa-chevron-right"></i></div>
+        </div>
+
+        <div class="dept-card card-wellness" onclick="openApp('wellness')">
+            <img src="https://img2.pic.in.th/pic/Wellness-logo.png" class="dept-icon" style="background:white; padding:2px;">
+            <div class="dept-info">
+                <h3>Wellness Clinic</h3>
+                <p>สครับเกลือ, สปาผิว, นวดอโรม่า</p>
+            </div>
+            <div class="arrow-btn"><i class="fas fa-chevron-right"></i></div>
+        </div>
+
+        <div class="info-card">
+            <img src="https://img5.pic.in.th/file/secure-sv1/d26f2357c0618da568d3dcf464837fda.png" class="info-img">
+            <div class="info-content">
+                <h4><i class="fas fa-hospital-alt" style="color:#2e7d32;"></i> ตึกอุบัติเหตุ 4 ชั้น (ตึกมรกต)</h4>
+                <p>สถานที่ให้บริการแพทย์แผนไทย ชั้น 4</p>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div id="view-dashboard" class="hidden">
+    <div class="top-section">
+      <div class="back-btn" onclick="goHome()"><i class="fas fa-arrow-left"></i></div>
+      <div class="header-content">
+        <img id="app-logo" src="" class="app-logo">
+        <div class="header-titles">
+          <h1 id="app-title"></h1>
+          <p>ตารางนัด (Real-time) <span id="loadingIndicator" class="mini-loader"><i class="fas fa-circle-notch fa-spin"></i></span></p>
+        </div>
+      </div>
+      <div id="liveClock" class="live-clock"><i class="far fa-clock"></i> <span>...</span></div>
+      <div id="dateScroller" class="date-scroller"></div>
+    </div>
+
+    <div class="container">
+      <div id="contentArea"></div>
+      <div class="contact-section">
+        <p style="font-weight:600; margin-bottom:15px; font-size:0.9rem; color:#64748b;">ช่องทางติดต่อ</p>
+        <div style="white-space:nowrap;">
+          <a href="https://www.facebook.com/ttmsadao" target="_blank" class="social-btn btn-fb"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://lin.ee/Ip6j7HP" target="_blank" class="social-btn btn-line"><i class="fab fa-line"></i></a>
+          <a href="https://www.youtube.com/@TTM_TCM_SADAO" target="_blank" class="social-btn btn-yt"><i class="fab fa-youtube"></i></a>
+          <a href="tel:0842671735" class="social-btn btn-phone"><i class="fas fa-phone"></i></a>
+          <a href="tel:074379994" class="social-btn btn-phone" style="background:#555"><i class="fas fa-phone-alt"></i></a>
+        </div>
+        <div style="font-size:0.85rem; color:#94a3b8; margin-top:12px;">โทร: 084-267-1735 หรือ 074-379-994</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="bookingModal" class="modal-overlay">
+    <div class="modal-card">
+      <div id="step-form">
+        <div class="modal-header">
+            <span><i class="fas fa-edit"></i> กรอกข้อมูลจองคิว</span>
+            <button id="btn-use-old" class="btn-autofill" onclick="fillUserData()">
+                <i class="fas fa-history"></i> ใช้ข้อมูลเดิม
+            </button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">ชื่อ-นามสกุล</label>
+          <input type="text" id="inp-name" class="form-control" placeholder="เช่น ใจดี มีสุข" autocomplete="off">
+          <div id="list-name" class="autocomplete-list"></div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">เบอร์โทรศัพท์</label>
+          <input type="tel" id="inp-tel" class="form-control" placeholder="08x-xxx-xxxx" autocomplete="off">
+          <div id="list-tel" class="autocomplete-list"></div>
+        </div>
+        
+        <div id="normal-fields">
+            <div class="form-group">
+              <label class="form-label">เลือกบริการ</label>
+              <select id="inp-service" class="form-control"></select>
+            </div>
+
+            <div class="form-group" id="group-staff">
+              <label class="form-label">ผู้ให้บริการ (ผู้ช่วยแพทย์แผนไทย)</label>
+              <div class="custom-select-wrapper">
+                 <div class="custom-select" id="staff-trigger" onclick="toggleStaffDropdown()">
+                     <div class="select-selected">
+                         <img id="staff-display-img" src="https://img2.pic.in.th/pic/1c189d2a727f532d391a5ab0604ccd2f.png" class="select-img" onerror="this.src='https://img2.pic.in.th/pic/1c189d2a727f532d391a5ab0604ccd2f.png'">
+                         <span id="staff-display-name">ไม่ระบุ</span>
+                     </div>
+                     <i class="fas fa-chevron-down select-arrow"></i>
+                 </div>
+                 <div class="select-items" id="staff-options"></div>
+              </div>
+              <input type="hidden" id="inp-staff-val" value="ไม่ระบุ">
+            </div>
+
+            <div id="box-option-2hr" class="option-2hr-container">
+                <label class="option-2hr-label">
+                    <input type="checkbox" id="inp-2hr" class="chk-2hr">
+                    <span><i class="fas fa-star" style="color:#f59e0b;"></i> จองต่อเนื่อง 2 ชั่วโมง (ว่าง)</span>
+                </label>
+                <div class="option-2hr-note">*ชั่วโมงที่ 2 ชำระเพิ่ม 200 บาท</div>
+            </div>
+        </div>
+
+        <div id="postpartum-fields" class="hidden">
+            <div class="form-group">
+              <label class="form-label">วันเดือนปี ที่คลอด</label>
+              <input type="date" id="inp-birth-date" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">ประเภทการคลอด</label>
+              <select id="inp-delivery-type" class="form-control">
+                <option value="">-- กรุณาเลือก --</option>
+                <option value="คลอดเองตามธรรมชาติ">คลอดเองตามธรรมชาติ</option>
+                <option value="ผ่าตัดคลอด">ผ่าตัดคลอด</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">คลอดโรงพยาบาลอะไร</label>
+              <input type="text" id="inp-hospital" class="form-control" placeholder="ระบุชื่อโรงพยาบาล">
+            </div>
+            <div class="form-group" style="background:#fce7f3; padding:10px; border-radius:10px; border:1px dashed #ec4899; color:#9d174d; font-size:0.9rem;">
+                <i class="fas fa-info-circle"></i> เฉพาะสิทธิ <strong>ประกันสังคม</strong> มีค่าบริการ 500 บาท
+            </div>
+        </div>
+
+        <div id="steam-fields" class="hidden">
+           <div class="form-group">
+              <label class="form-label">เพศ</label>
+              <select id="inp-gender" class="form-control">
+                 <option value="หญิง">หญิง</option>
+                 <option value="ชาย">ชาย</option>
+              </select>
+           </div>
+           
+           <label class="form-label">ผู้รับบริการเพิ่มเติม (ถ้ามี)</label>
+           <div id="extra-patients-container"></div>
+           
+           <button type="button" class="btn-add-patient" onclick="addPatient()">
+             <i class="fas fa-user-plus"></i> เพิ่มผู้รับบริการ
+           </button>
+           <div style="font-size:0.8rem; color:#64748b; margin-top:5px;">*เพิ่มได้ไม่เกินจำนวนคิวว่างในรอบนี้</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" id="lbl-note">หมายเหตุ (ถ้ามี)</label>
+          <textarea id="inp-note" class="form-control" placeholder="เช่น กระดูกหัก/ผ่าตัด ในช่วง 3 เดือนนี้, กำลังมีประจำเดือน ,มีไข้สูง"></textarea>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-cancel" onclick="closeModal()">ยกเลิก</button>
+          <button class="btn btn-confirm" onclick="goToSummary()">บันทึก</button>
+        </div>
+      </div>
+
+      <div id="step-summary" class="hidden">
+        <div class="modal-header"><i class="fas fa-list-check"></i> ตรวจสอบข้อมูล</div>
+        <div class="summary-box" id="summary-content"></div>
+        <div class="btn-group">
+          <button class="btn btn-cancel" onclick="backToForm()">แก้ไข</button>
+          <button class="btn btn-confirm" onclick="confirmBooking()">ยืนยันการจอง</button>
+        </div>
+      </div>
+
+      <div id="step-warning" class="hidden">
+        <div class="warning-popup">
+          <div class="warning-icon"><i class="fas fa-exclamation-circle"></i></div>
+          <div class="warning-text">
+            <strong>โปรดทราบ!</strong><br>
+            คิวจะถูกจองสำเร็จ<br>
+            ต่อเมื่อเจ้าหน้าที่ <u>ตอบรับทางไลน์</u> แล้วเท่านั้น
+          </div>
+          <button class="btn btn-confirm" style="width:100%" onclick="sendToLine()">
+            <i class="fab fa-line"></i> รับทราบ & ส่งข้อมูลเข้าไลน์
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // **********************************************************
+    // URL ที่คุณให้มาถูกใส่ไว้ตรงนี้แล้วเรียบร้อยครับ
+    // **********************************************************
+    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbxuZ1uo7q2V6vnKddOdnmEO_L8QIh6q1btJdUtoUroVj8q4dIPmeGX6DJHYbGr7bmCD/exec";
+
+    const LINE_OA_ID = "@649dqeft";
+    
+    // --- CONFIGURATION ---
+    const APP_CONFIG = {
+      ttm: { title: "แพทย์แผนไทย", logo: "https://img2.pic.in.th/pic/6f7b352408393a1295f3000e7d9e6754.md.png", color: "#2e7d32", dark: "#1b5e20", func: "getTTMData" },
+      tcm: { title: "แพทย์แผนจีน", logo: "https://img2.pic.in.th/pic/--06d2d95efaba2074.md.png", color: "#e53935", dark: "#b71c1c", func: "getTCMData" },
+      postpartum: { title: "บริการหลังคลอด", logo: "https://img2.pic.in.th/pic/eb06897c542c79b64690c8e794fa84a4.png", color: "#ec4899", dark: "#be185d", func: "getPostpartumData" },
+      steam: { title: "อบไอน้ำสมุนไพร", logo: "https://img2.pic.in.th/pic/-3b445847427fcbfd.png", color: "#0288d1", dark: "#01579b", func: "getSteamData" },
+      wellness: { title: "Wellness Clinic", logo: "https://img2.pic.in.th/pic/Wellness-logo.png", color: "#D4AF37", dark: "#AA8C2C", func: "getWellnessData" }
+    };
+
+    const SERVICE_OPTIONS = {
+      ttm: ["นวดและประคบเพื่อการรักษา", "นวดตัวส่งเสริมสุขภาพ(ชำระเงินเอง)", "นวดเท้าส่งเสริมสุขภาพ(ชำระเงินเอง)"],
+      tcm: ["ฝังเข็มเพื่อการรักษา", "ครอบแก้ว", "ฝังเข็มใบหน้า", "ปรึกษาแพทย์แผนจีน"]
+    };
+
+    const WELLNESS_PRICES = { "สครับเกลือ": "500.-", "สปาผิว": "650.-", "นวดน้ำมันอโรม่า": "550.-" };
+
+    const STAFF_IMAGES = {
+        "รจนา M": "https://img2.pic.in.th/pic/-b38b682db8ac596b.png",
+        "อรรถพล B": "https://img5.pic.in.th/file/secure-sv1/6b74e1ebb096c81368605ff43948dab4.png",
+        "ศินารัตน์ C": "https://img2.pic.in.th/pic/-df4e3c6f4a4b331f.png",
+        "จุฑามาศ F": "https://img5.pic.in.th/file/secure-sv1/709dfc05071615eaaf008ea63d1e037e.png",
+        "รัตน์ชนก KW": "https://img2.pic.in.th/pic/-83673d6d528be12a.png",
+        "นิกษ์นิภา T": "https://img5.pic.in.th/file/secure-sv1/-c4fe207fa6c04aa3.png",
+        "ณิชาภัทร W": "https://img2.pic.in.th/pic/1ef0aa325ccac37724897c9f2c10e5f4.png",
+        "จินดา J": "https://img2.pic.in.th/pic/93b060e9e4b3fc9a9070d5ac2768c879.png"
+    };
+
+    const STAFF_NAME_MAP = {
+        "รจนา M": "รจนา (แหม่ม)", "อรรถพล B": "อรรถพล (บ่าว)", "ศินารัตน์ C": "ศินารัตน์ (ซี)",
+        "จุฑามาศ F": "จุฑามาศ (ฝน)", "ณิชาภัทร W": "ณิชาภัทร (วาวา)", "นิกษ์นิภา T": "นิกษ์นิภา (ตูน)",
+        "รัตน์ชนก KW": "รัตน์ชนก (กวาง)", "จินดา J": "จินดา (เจี๊ยบ)"
+    };
+    
+    const DEFAULT_IMG = "https://img2.pic.in.th/pic/1c189d2a727f532d391a5ab0604ccd2f.png";
+    const DAY_COLORS = [ "#FF5252", "#FFD740", "#E040FB", "#4CAF50", "#FF9800", "#2196F3", "#9C27B0" ];
+
+    const TIME_PAIRS = {
+        "08:30": "09:30", "09:30": "10:30", "13:00": "14:00", "14:00": "15:00", "17:00": "18:00",
+        "8:30": "9:30", "9:30": "10:30"
+    };
+
+    let currentApp = '', globalData = [], bookingData = {};
+    let refreshInterval;
+    let selectedIndex = 0;
+    let isFetching = false;
+    let nextSlotStaffList = [];
+    let currentSlotCapacity = 0;
+    let patientCount = 1;
+
+    const SafeStorage = {
+        getItem: function(key) { try { return localStorage.getItem(key); } catch(e) { return null; } },
+        setItem: function(key, val) { try { localStorage.setItem(key, val); } catch(e) { } }
+    };
+
+    function startClock() {
+      setInterval(() => {
+        let now = new Date();
+        let dateStr = now.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+        let timeStr = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+        let year = now.getFullYear() + 543;
+        dateStr = dateStr.replace(now.getFullYear(), year);
+        let el = document.querySelector('#liveClock span');
+        if(el) el.innerText = `${dateStr} ${timeStr}`;
+      }, 1000);
+    }
+    startClock();
+
+    function openApp(type) {
+      try {
+          if (!APP_CONFIG[type]) { alert("Error: Invalid Service Type (" + type + ")"); return; }
+          currentApp = type;
+          isFetching = false;
+          
+          let conf = APP_CONFIG[type];
+          document.documentElement.style.setProperty('--primary', conf.color);
+          document.documentElement.style.setProperty('--primary-dark', conf.dark);
+          
+          document.getElementById('app-title').innerText = conf.title;
+          document.getElementById('app-logo').src = conf.logo;
+          document.getElementById('view-home').classList.add('hidden');
+          document.getElementById('view-dashboard').classList.remove('hidden');
+          
+          selectedIndex = 0;
+          fetchData(true);
+          
+          if(refreshInterval) clearInterval(refreshInterval);
+          refreshInterval = setInterval(function() { fetchData(false); }, 10000);
+      } catch (err) { alert("เกิดข้อผิดพลาด: " + err.message); }
+    }
+
+    function goHome() {
+      if(refreshInterval) clearInterval(refreshInterval);
+      document.getElementById('view-dashboard').classList.add('hidden');
+      document.getElementById('view-home').classList.remove('hidden');
+      currentApp = '';
+    }
+
+    function fetchData(isFirstLoad) {
+      if (isFetching || (!isFirstLoad && document.hidden)) return;
+      isFetching = true;
+      if (isFirstLoad) {
+         document.getElementById('contentArea').innerHTML = '<div style="text-align:center;padding:50px;color:#999"><i class="fas fa-circle-notch fa-spin"></i> กำลังโหลด...</div>';
+      } else {
+         document.getElementById('loadingIndicator').classList.add('show');
+      }
+
+      const actionName = APP_CONFIG[currentApp].func;
+      fetch(`${API_ENDPOINT}?action=${actionName}`)
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'error') {
+                console.error("API Error:", data.message);
+                return;
+            }
+            renderApp(data, currentApp);
+            document.getElementById('loadingIndicator').classList.remove('show');
+            isFetching = false;
+        })
+        .catch(err => {
+            console.error("Fetch failed", err);
+            document.getElementById('loadingIndicator').classList.remove('show');
+            isFetching = false;
+        });
+    }
+
+    function renderApp(data, userObj) {
+      if (currentApp !== userObj) return;
+      globalData = data;
+      renderScroller();
+      renderSlots(selectedIndex);
+    }
+
+    function renderScroller() {
+      let html = '';
+      let thDays = ["อา.","จ.","อ.","พ.","พฤ.","ศ.","ส."];
+      globalData.forEach((d, i) => {
+        let color = DAY_COLORS[d.dayOfWeek];
+        let activeClass = (i === selectedIndex) ? 'active' : '';
+        html += `<div class="date-chip ${activeClass}" style="--day-color: ${color}" onclick="selectDate(this, ${i})"><small>${thDays[d.dayOfWeek]}</small><span>${d.displayDate.split(" ")[0]}</span></div>`;
+      });
+      document.getElementById('dateScroller').innerHTML = html;
+    }
+
+    function selectDate(el, index) {
+      selectedIndex = index;
+      document.querySelectorAll('.date-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      renderSlots(index);
+    }
+
+    function renderSlots(index) {
+      let day = globalData[index];
+      let container = document.getElementById('contentArea');
+      let dayColor = DAY_COLORS[day.dayOfWeek];
+      let headerHtml = `<div class="selected-date-header"><span class="header-bar" style="background-color: ${dayColor}"></span>${day.fullLabel || day.displayDate}</div>`;
+
+      if (day.status === 'no_data') {
+        container.innerHTML = headerHtml + `<div style="text-align:center;padding:40px;color:#cbd5e1"><h3>⛔ งดให้บริการ</h3><p>ไม่มีรอบว่างในวันนี้</p></div>`;
+        return;
+      }
+
+      let html = headerHtml + '<div class="grid-container">';
+      day.slots.forEach((slot, i) => {
+        let val = slot.val ? slot.val.toString() : "";
+        if (val === 'งด') return;
+
+        let isFull = (val.includes('เต็ม') || val.includes('งด'));
+        let displayVal = val;
+        let count = slot.count || 0;
+        let slotGender = slot.gender || "";
+
+        let genderClass = "";
+        let genderIcon = "";
+        if (currentApp === 'steam' && slotGender !== "" && !isFull) {
+            if (slotGender.includes("ชาย")) {
+                genderClass = "gender-male";
+                genderIcon = '<div style="font-size:0.75rem; color:#1565c0;"><i class="fas fa-mars"></i> รอบชาย</div>';
+            } else if (slotGender.includes("หญิง")) {
+                genderClass = "gender-female";
+                genderIcon = '<div style="font-size:0.75rem; color:#ad1457;"><i class="fas fa-venus"></i> รอบหญิง</div>';
+            }
+        }
+
+        if (!isFull) {
+            if (count > 0) {
+                let iconsHtml = '<div style="display:flex; margin-right:6px;">';
+                let displayCount = Math.min(count, 5);
+                for(let k=0; k < displayCount; k++) {
+                    iconsHtml += '<i class="fas fa-user" style="font-size:0.75rem; margin:0 1px; opacity:0.7;"></i>';
+                }
+                if (count > 5) iconsHtml += '<span style="font-size:0.8rem; opacity:0.7;">+</span>';
+                iconsHtml += '</div>';
+                let textHtml = `<span style="font-weight:600; font-size:0.9rem;">ว่าง ${count} คิว</span>`;
+                displayVal = `<div style="display:flex; flex-direction:column; align-items:flex-end;">${genderIcon}<div style="display:flex; align-items:center;">${iconsHtml}${textHtml}</div></div>`;
+            }
+        }
+
+        let cardClass = isFull ? 'is-full' : 'is-available';
+        if (!isFull && genderClass !== "") cardClass += " " + genderClass;
+
+        let badgeClass = isFull ? 'bg-full' : 'bg-av';
+        let icon = '<i class="fas fa-leaf"></i>';
+        if (currentApp === 'tcm') icon = '<i class="fas fa-star"></i>';
+        if (currentApp === 'postpartum') icon = '<i class="fas fa-heart"></i>';
+        if (currentApp === 'steam') icon = '<i class="fas fa-hot-tub-person"></i>';
+        if (currentApp === 'wellness') icon = '<i class="fas fa-spa" style="color:#D4AF37;"></i>';
+        if (isFull) icon = '<i class="fas fa-lock"></i>';
+        
+        let staffJson = JSON.stringify(slot.staff || []).replace(/"/g, "&quot;");
+        let action = isFull ? '' : `onclick="openBooking('${slot.time}', '${day.fullLabel || day.displayDate}', ${index}, ${staffJson}, ${count}, '${slotGender}')"`;
+        let cursor = isFull ? '' : 'cursor:pointer';
+        
+        html += `<div class="slot-card ${cardClass}" style="animation-delay:${i*0.05}s; ${cursor}" ${action}><div class="time-wrap"><div class="icon-status">${icon}</div><div class="time-text">${slot.time} น.</div></div><div class="status-badge ${badgeClass}">${displayVal}</div></div>`;
+      });
+      container.innerHTML = html + '</div>';
+    }
+
+    function setupAutocomplete(inputId, listId, storageKey, keyName) {
+        const input = document.getElementById(inputId);
+        const list = document.getElementById(listId);
+        input.addEventListener('input', function() {
+            const val = this.value.trim().toLowerCase();
+            list.innerHTML = '';
+            if (val.length === 0) { list.style.display = 'none'; return; }
+            
+            let history = JSON.parse(SafeStorage.getItem(storageKey)) || [];
+            
+            let matches = history.filter(item => item[keyName] && item[keyName].toLowerCase().includes(val));
+            if (matches.length > 0) {
+                matches.forEach(m => {
+                    const div = document.createElement('div');
+                    div.className = 'autocomplete-item';
+                    div.innerHTML = `<span><i class="fas fa-clock-rotate-left"></i></span> ${m[keyName]}`;
+                    div.addEventListener('click', function() {
+                        input.value = m[keyName];
+                        list.style.display = 'none';
+                    });
+                    list.appendChild(div);
+                });
+                list.style.display = 'block';
+            } else { list.style.display = 'none'; }
+        });
+        document.addEventListener('click', function(e) { if (e.target !== input && e.target !== list) list.style.display = 'none'; });
+    }
+    setupAutocomplete('inp-name', 'list-name', 'ttm_booking_history', 'name');
+    setupAutocomplete('inp-tel', 'list-tel', 'ttm_booking_history', 'tel');
+
+    function toggleStaffDropdown() { document.getElementById('staff-trigger').classList.toggle('open'); }
+    window.addEventListener('click', function(e) { if (!document.querySelector('.custom-select-wrapper').contains(e.target)) document.getElementById('staff-trigger').classList.remove('open'); });
+
+    function selectStaff(name, img, can2Hr) {
+        document.getElementById('staff-display-name').innerText = name;
+        document.getElementById('staff-display-img').src = img;
+        document.getElementById('inp-staff-val').value = name;
+        document.getElementById('staff-trigger').classList.remove('open');
+        let box = document.getElementById('box-option-2hr');
+        let chk = document.getElementById('inp-2hr');
+        
+        if (can2Hr && currentApp === 'ttm') { box.style.display = 'block'; } 
+        else { box.style.display = 'none'; chk.checked = false; }
+    }
+
+    function renderStaffList(availableStaffList) {
+        const optionsContainer = document.getElementById('staff-options');
+        optionsContainer.innerHTML = '';
+        let html = `<div class="select-item" onclick="selectStaff('ไม่ระบุ', '${DEFAULT_IMG}', false)">
+                        <img src="${DEFAULT_IMG}" class="item-img" onerror="this.src='${DEFAULT_IMG}'">
+                        <div class="item-text">ไม่ระบุ (ใครก็ได้)</div>
+                    </div>`;
+        if (availableStaffList && availableStaffList.length > 0) {
+            availableStaffList.forEach(sheetName => {
+                let displayName = STAFF_NAME_MAP[sheetName] || sheetName;
+                let img = STAFF_IMAGES[sheetName] || DEFAULT_IMG;
+                let is2HrAvailable = nextSlotStaffList.includes(sheetName);
+                html += `<div class="select-item" onclick="selectStaff('${displayName}', '${img}', ${is2HrAvailable})">
+                            <img src="${img}" class="item-img" onerror="this.src='${DEFAULT_IMG}'">
+                            <div class="item-text" style="flex:1;">${displayName}</div>
+                            ${is2HrAvailable ? '<div class="badge-2hr"><i class="fas fa-check-circle"></i> ว่าง 2 ชม.</div>' : ''}
+                        </div>`;
+            });
+        }
+        optionsContainer.innerHTML = html;
+        selectStaff('ไม่ระบุ', DEFAULT_IMG, false);
+    }
+
+    function loadUserData() {
+        let history = JSON.parse(SafeStorage.getItem('ttm_booking_history')) || [];
+        document.getElementById('btn-use-old').style.display = (history.length > 0) ? 'inline-flex' : 'none';
+    }
+    function saveUserData(name, tel) {
+        if(!name || !tel) return;
+        let history = JSON.parse(SafeStorage.getItem('ttm_booking_history')) || [];
+        history = history.filter(item => item.name !== name);
+        history.unshift({ name: name, tel: tel });
+        if (history.length > 5) history.pop();
+        SafeStorage.setItem('ttm_booking_history', JSON.stringify(history));
+    }
+    function fillUserData() {
+        let history = JSON.parse(SafeStorage.getItem('ttm_booking_history')) || [];
+        if (history.length > 0) {
+            document.getElementById('inp-name').value = history[0].name;
+            document.getElementById('inp-tel').value = history[0].tel;
+        }
+    }
+
+    function openBooking(time, dateFull, dayIndex, staffList, availableCount, slotGender) {
+      try {
+          bookingData = { dept: APP_CONFIG[currentApp].title, date: dateFull, time: time, is2Hr: false };
+          currentSlotCapacity = availableCount || 0;
+          
+          document.getElementById('inp-name').value = '';
+          document.getElementById('inp-tel').value = '';
+          document.getElementById('inp-note').value = '';
+          document.getElementById('inp-2hr').checked = false;
+          document.getElementById('box-option-2hr').style.display = 'none';
+
+          document.querySelector('.modal-card').scrollTop = 0;
+
+          document.getElementById('normal-fields').classList.add('hidden');
+          document.getElementById('postpartum-fields').classList.add('hidden');
+          document.getElementById('steam-fields').classList.add('hidden');
+
+          nextSlotStaffList = [];
+          let nextTime = TIME_PAIRS[time];
+          if (nextTime) {
+              let dayData = globalData[dayIndex];
+              let nextSlot = dayData.slots.find(s => s.time === nextTime);
+              if (nextSlot && nextSlot.val && !nextSlot.val.includes('เต็ม') && !nextSlot.val.includes('งด')) {
+                  nextSlotStaffList = nextSlot.staff || [];
+              }
+          }
+
+          if (currentApp === 'postpartum') {
+              document.getElementById('postpartum-fields').classList.remove('hidden');
+              document.getElementById('inp-note').placeholder = "เช่น น้ำนมไหลน้อย คัดตึงเต้านม";
+              document.getElementById('lbl-note').innerText = "ระบุอาการเพิ่มเติม (ถ้ามี)";
+              bookingData.staff = "ทีมหลังคลอด";
+              bookingData.service = "บริการมารดาหลังคลอด";
+          } else if (currentApp === 'steam') {
+              document.getElementById('steam-fields').classList.remove('hidden');
+              document.getElementById('inp-note').placeholder = "ระบุเพิ่มเติม (ถ้ามี)";
+              document.getElementById('lbl-note').innerText = "หมายเหตุ";
+              bookingData.staff = "ห้องอบไอน้ำ";
+              bookingData.service = "อบไอน้ำสมุนไพร";
+              document.getElementById('extra-patients-container').innerHTML = '';
+              patientCount = 1;
+              
+              if (slotGender && slotGender.includes('ชาย')) {
+                 document.getElementById('inp-gender').value = 'ชาย';
+              } else if (slotGender && slotGender.includes('หญิง')) {
+                 document.getElementById('inp-gender').value = 'หญิง';
+              }
+
+          } else {
+              document.getElementById('normal-fields').classList.remove('hidden');
+              document.getElementById('inp-note').placeholder = "เช่น กระดูกหัก/ผ่าตัด ในช่วง 3 เดือนนี้...";
+              document.getElementById('lbl-note').innerText = "หมายเหตุ (ถ้ามี)";
+              
+              let select = document.getElementById('inp-service');
+              select.innerHTML = '';
+              
+              if (currentApp === 'wellness') {
+                  document.getElementById('group-staff').classList.add('hidden');
+                  document.getElementById('inp-staff-val').value = "Wellness Center";
+
+                  if (staffList && staffList.length > 0) {
+                      staffList.forEach(s => {
+                          let price = WELLNESS_PRICES[s] || "";
+                          let displayLabel = price ? `${s} (${price})` : s;
+                          
+                          let opt = document.createElement('option');
+                          opt.value = displayLabel;
+                          opt.innerText = displayLabel;
+                          select.appendChild(opt);
+
+                          if (s === "สปาผิว" && nextSlotStaffList.includes("สปาผิว")) {
+                              let opt2 = document.createElement('option');
+                              opt2.value = `สปาผิว (2 ชม. 1,000.-)`;
+                              opt2.innerText = `สปาผิว (2 ชม. 1,000.-)`;
+                              opt2.style.fontWeight = "bold";
+                              opt2.style.color = "#b45309";
+                              select.appendChild(opt2);
+                          }
+                      });
+                  } else {
+                      let opt = document.createElement('option'); opt.innerText = "ไม่พบข้อมูลบริการ"; select.appendChild(opt);
+                  }
+
+              } else {
+                 if (SERVICE_OPTIONS[currentApp]) {
+                     SERVICE_OPTIONS[currentApp].forEach(s => {
+                       let opt = document.createElement('option'); opt.value = s; opt.innerText = s; select.appendChild(opt);
+                     });
+                 }
+              }
+          }
+
+          if (currentApp === 'ttm') {
+              if (staffList && staffList.length > 0) {
+                  document.getElementById('group-staff').classList.remove('hidden');
+                  renderStaffList(staffList);
+              } else {
+                  document.getElementById('group-staff').classList.add('hidden');
+                  document.getElementById('inp-staff-val').value = "-";
+              }
+          } else if (currentApp === 'tcm') {
+              document.getElementById('group-staff').classList.add('hidden');
+              document.getElementById('inp-staff-val').value = "แพทย์แผนจีน";
+          }
+
+          loadUserData();
+          switchStep('step-form');
+          document.getElementById('bookingModal').classList.add('show');
+      } catch (e) {
+          console.error(e);
+          alert("เกิดข้อผิดพลาดในการเปิดจอง: " + e.message);
+      }
+    }
+
+    function addPatient() {
+       if (patientCount >= currentSlotCapacity) {
+           alert("จำนวนผู้รับบริการเต็มโควต้าที่ว่างแล้ว (" + currentSlotCapacity + " คน)");
+           return;
+       }
+       patientCount++;
+       const container = document.getElementById('extra-patients-container');
+       const div = document.createElement('div');
+       div.className = 'extra-patient-item';
+       div.innerHTML = `
+          <div style="flex:1;">
+             <input type="text" class="form-control inp-extra-name" placeholder="ชื่อ-สกุล คนที่ ${patientCount}">
+          </div>
+          <div style="width:100px;">
+             <select class="form-control inp-extra-gender">
+                <option value="หญิง">หญิง</option>
+                <option value="ชาย">ชาย</option>
+             </select>
+          </div>
+          <button type="button" class="btn-remove" onclick="removePatient(this)"><i class="fas fa-trash"></i></button>
+       `;
+       container.appendChild(div);
+    }
+
+    function removePatient(btn) { btn.parentElement.remove(); patientCount--; }
+    function closeModal() { document.getElementById('bookingModal').classList.remove('show'); }
+    function switchStep(id) {
+      ['step-form', 'step-summary', 'step-warning'].forEach(s => document.getElementById(s).classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function goToSummary() {
+      document.querySelector('.modal-card').scrollTop = 0;
+      let name = document.getElementById('inp-name').value.trim();
+      let tel = document.getElementById('inp-tel').value.trim();
+      if(!name || !tel) { alert('กรุณากรอกชื่อและเบอร์โทรศัพท์'); return; }
+      
+      bookingData.name = name;
+      bookingData.tel = tel;
+      bookingData.note = document.getElementById('inp-note').value.trim() || "-";
+      bookingData.extraInfo = "";
+
+      if (currentApp === 'postpartum') {
+          let birthDate = document.getElementById('inp-birth-date').value;
+          let deliveryType = document.getElementById('inp-delivery-type').value;
+          let hospital = document.getElementById('inp-hospital').value;
+          if(!birthDate || !hospital || !deliveryType) { alert('กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
+          bookingData.extraInfo = `\nวันคลอด: ${birthDate}\nวิธีคลอด: ${deliveryType}\nรพ.: ${hospital}`;
+      } else if (currentApp === 'steam') {
+          let mainGender = document.getElementById('inp-gender').value;
+          let extraInfoText = `\nเพศ: ${mainGender}`;
+          let extraNames = document.querySelectorAll('.inp-extra-name');
+          let extraGenders = document.querySelectorAll('.inp-extra-gender');
+          if (extraNames.length > 0) {
+              extraInfoText += `\n\nผู้ร่วมเข้าบริการ:`;
+              extraNames.forEach((input, index) => {
+                  let pName = input.value.trim();
+                  let pGender = extraGenders[index].value;
+                  if(pName) { extraInfoText += `\n- ${pName} (${pGender})`; }
+              });
+          }
+          bookingData.extraInfo = extraInfoText;
+          bookingData.service = "อบไอน้ำสมุนไพร";
+          bookingData.staff = "ห้องอบไอน้ำ";
+      } else {
+          bookingData.service = document.getElementById('inp-service').value;
+          bookingData.staff = document.getElementById('inp-staff-val').value;
+          bookingData.is2Hr = document.getElementById('inp-2hr').checked;
+      }
+      
+      let staffRowHtml = '';
+      if (currentApp === 'ttm') {
+          let labelStaff = (bookingData.staff !== "ไม่ระบุ") ? bookingData.staff : "ไม่ระบุ (ใครก็ได้)";
+          staffRowHtml = `<div class="summary-row"><div class="summary-label">ผู้ให้บริการ:</div><div class="summary-val" style="color:var(--primary)">${labelStaff}</div></div>`;
+      }
+
+      let extraTimeHtml = '';
+      if (bookingData.is2Hr && currentApp === 'ttm') {
+          extraTimeHtml = `<div class="summary-row" style="margin-top:5px; background:#fffbeb; padding:8px; border-radius:12px; border:1px solid #f59e0b;">
+                               <div class="summary-val" style="color:#b45309; font-weight:700;">
+                                 <i class="fas fa-clock"></i> นัดจอง 2 ชม. (ชำระเพิ่ม 200บ.)
+                               </div>
+                             </div>`;
+      }
+
+      let html = `
+        <div class="summary-row" style="margin-bottom:4px;"><div class="summary-val" style="font-size:1.1rem;">${bookingData.name}</div></div>
+        <div class="summary-row"><div class="summary-val" style="color:#64748b;">${bookingData.tel}</div></div>
+        <div class="summary-row" style="margin-top:12px;"><div class="summary-label">แผนก:</div><div class="summary-val">${bookingData.dept}</div></div>
+        <div class="summary-row"><div class="summary-label">บริการ:</div><div class="summary-val">${bookingData.service}</div></div>
+        ${staffRowHtml}
+        <div class="summary-row"><div class="summary-label">วันเวลา:</div><div class="summary-val">${bookingData.date} เวลา ${bookingData.time} น.</div></div>
+        ${extraTimeHtml}
+        <div class="summary-row" style="white-space: pre-wrap;"><div class="summary-label">รายละเอียด:</div><div class="summary-val">${bookingData.extraInfo}</div></div>
+        <div class="summary-row"><div class="summary-label">หมายเหตุ:</div><div class="summary-val">${bookingData.note}</div></div>
+      `;
+      document.getElementById('summary-content').innerHTML = html;
+      switchStep('step-summary');
+    }
+
+    function backToForm() { switchStep('step-form'); }
+    function confirmBooking() { saveUserData(bookingData.name, bookingData.tel); switchStep('step-warning'); }
+
+    function sendToLine() {
+      let msgStaff = (currentApp === 'ttm' && bookingData.staff) ? `\nผู้ให้บริการ: ${bookingData.staff}` : '';
+      let msgExtra = (bookingData.is2Hr && currentApp === 'ttm') ? `\n**นัดจอง 2 ชม.** (ชำระเพิ่ม 200บ.)` : '';
+      
+      let msg = `ขอจองคิว${bookingData.dept}\n${bookingData.name}\n${bookingData.tel}\nบริการ: ${bookingData.service}${msgStaff}\nวันที่: ${bookingData.date}\nเวลา: ${bookingData.time} น.${bookingData.extraInfo}\nหมายเหตุ: ${bookingData.note}${msgExtra}`;
+      
+      let dummy = document.createElement("textarea");
+      document.body.appendChild(dummy); dummy.value = msg; dummy.select(); document.execCommand("copy"); document.body.removeChild(dummy);
+      
+      let url = `https://line.me/R/oaMessage/${LINE_OA_ID}/?${encodeURIComponent(msg)}`;
+      
+      if (LINE_OA_ID && LINE_OA_ID.startsWith('@')) {
+          window.location.href = url;
+      } else {
+          alert("ระบบคัดลอกข้อมูลการจองแล้ว\nกรุณากด 'วาง' (Paste) ในแชท LINE");
+          window.location.href = "https://lin.ee/Ip6j7HP";
+      }
+      closeModal();
+    }
+
+    document.addEventListener("visibilitychange", function() {
+        if (document.visibilityState === 'visible' && currentApp !== '') {
+             if(refreshInterval) clearInterval(refreshInterval);
+             fetchData(false);
+             refreshInterval = setInterval(function() { fetchData(false); }, 10000);
+        }
+    });
+  </script>
+</body>
+</html>
