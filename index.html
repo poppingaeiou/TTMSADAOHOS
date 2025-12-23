@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>จองคิวออนไลน์ รพ.สะเดา</title>
-  <link rel="icon" href="https://img2.pic.in.th/pic/34b5ae8042fd52c90e27479e9fb56d8e.md.png" type="image/png">
-  <link rel="apple-touch-icon" href="https://img2.pic.in.th/pic/34b5ae8042fd52c90e27479e9fb56d8e.md.png">
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -295,7 +293,17 @@
         <div id="normal-fields">
             <div class="form-group">
               <label class="form-label">เลือกบริการ</label>
-              <select id="inp-service" class="form-control"></select>
+              <select id="inp-service" class="form-control" onchange="updatePriceDisplay()"></select>
+              
+              <div id="price-tag" style="margin-top:10px; display:none; animation:fadeIn 0.3s;">
+                  <div style="background:#f0f9ff; color:#0369a1; padding:12px 15px; border-radius:12px; font-size:0.9rem; border:1px solid #bae6fd; display:flex; align-items:flex-start; gap:10px; line-height:1.5;">
+                      <i class="fas fa-circle-info" style="margin-top:4px; font-size:1.1rem;"></i> 
+                      <div>
+                          <span style="font-weight:700; display:block; margin-bottom:2px;">อัตราค่าบริการ/สิทธิ:</span>
+                          <span id="price-val">-</span>
+                      </div>
+                  </div>
+              </div>
             </div>
 
             <div class="form-group" id="group-staff">
@@ -400,12 +408,38 @@
 
   <script>
     // **********************************************************
-    // URL ที่คุณให้มาถูกใส่ไว้ตรงนี้แล้วเรียบร้อยครับ
+    // URL Web App (Backend) ของคุณ
     // **********************************************************
     const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbxuZ1uo7q2V6vnKddOdnmEO_L8QIh6q1btJdUtoUroVj8q4dIPmeGX6DJHYbGr7bmCD/exec";
 
     const LINE_OA_ID = "@649dqeft";
     
+    // --- อัปเดต: ตารางราคาและสิทธิการรักษา (ใหม่ล่าสุด) ---
+    const SERVICE_PRICES = {
+        ttm: {
+            "นวดและประคบเพื่อการรักษา": "เบิกได้ตามสิทธิ (ยกเว้นประกันสังคม ชำระเงินเอง 250 บาท)",
+            "นวดตัวส่งเสริมสุขภาพ(ชำระเงินเอง)": "200 บาท (เพิ่มประคบสมุนไพร +50 บาท)", 
+            "นวดเท้าส่งเสริมสุขภาพ(ชำระเงินเอง)": "200 บาท"
+        },
+        tcm: {
+            "ฝังเข็มเพื่อการรักษา": "สิทธิข้าราชการเบิกได้ / สิทธิอื่นชำระเงินเอง 150-200 บาท<br><small style='color:#666'>(กลุ่ม IMC, สิทธิบัตรทอง เบิกได้)</small>",
+            "ครอบแก้ว": "150 บาท",
+            "ฝังเข็มใบหน้า": "300 บาท",
+            "ปรึกษาแพทย์แผนจีน": "ฟรี"
+        },
+        postpartum: {
+            "บริการมารดาหลังคลอด": "เบิกได้ตามสิทธิ (ยกเว้นประกันสังคม ชำระเงินเอง 500 บาท)"
+        },
+        steam: {
+            "อบไอน้ำสมุนไพร": "เบิกได้ตามสิทธิ (ยกเว้นประกันสังคม ชำระเงินเอง 100 บาท)"
+        },
+        wellness: {
+            "สครับเกลือ": "500 บาท",
+            "สปาผิว": "650 บาท",
+            "นวดน้ำมันอโรม่า": "550 บาท"
+        }
+    };
+
     // --- CONFIGURATION ---
     const APP_CONFIG = {
       ttm: { title: "แพทย์แผนไทย", logo: "https://img2.pic.in.th/pic/6f7b352408393a1295f3000e7d9e6754.md.png", color: "#2e7d32", dark: "#1b5e20", func: "getTTMData" },
@@ -721,6 +755,9 @@
           document.getElementById('inp-note').value = '';
           document.getElementById('inp-2hr').checked = false;
           document.getElementById('box-option-2hr').style.display = 'none';
+          
+          // ซ่อนป้ายราคาของเก่า
+          document.getElementById('price-tag').style.display = 'none';
 
           document.querySelector('.modal-card').scrollTop = 0;
 
@@ -744,6 +781,11 @@
               document.getElementById('lbl-note').innerText = "ระบุอาการเพิ่มเติม (ถ้ามี)";
               bookingData.staff = "ทีมหลังคลอด";
               bookingData.service = "บริการมารดาหลังคลอด";
+              
+              // เรียกให้โชว์ราคาของ Postpartum ทันที
+              document.getElementById('inp-service').value = "บริการมารดาหลังคลอด";
+              updatePriceDisplay();
+
           } else if (currentApp === 'steam') {
               document.getElementById('steam-fields').classList.remove('hidden');
               document.getElementById('inp-note').placeholder = "ระบุเพิ่มเติม (ถ้ามี)";
@@ -758,6 +800,10 @@
               } else if (slotGender && slotGender.includes('หญิง')) {
                  document.getElementById('inp-gender').value = 'หญิง';
               }
+              
+              // เรียกให้โชว์ราคาของ Steam ทันที
+              document.getElementById('inp-service').value = "อบไอน้ำสมุนไพร";
+              updatePriceDisplay();
 
           } else {
               document.getElementById('normal-fields').classList.remove('hidden');
@@ -801,6 +847,9 @@
                      });
                  }
               }
+              
+              // เรียกให้โชว์ราคาของบริการแรกใน list ทันที
+              updatePriceDisplay();
           }
 
           if (currentApp === 'ttm') {
@@ -948,6 +997,69 @@
       closeModal();
     }
 
+    // --- ฟังก์ชันอัปเดตราคา (ใหม่ล่าสุด) ---
+    function updatePriceDisplay() {
+        // หาบริการที่เลือก
+        let serviceName = document.getElementById('inp-service').value;
+        if (!serviceName && (currentApp === 'postpartum' || currentApp === 'steam')) {
+             // กรณี Postpartum/Steam ไม่มี Dropdown ให้ดึงค่าจากตัวแปรตรงๆ
+             if (currentApp === 'postpartum') serviceName = "บริการมารดาหลังคลอด";
+             if (currentApp === 'steam') serviceName = "อบไอน้ำสมุนไพร";
+        }
+
+        if (!serviceName) return;
+
+        // ตัดวงเล็บราคาเก่าออก (เฉพาะเคส Wellness)
+        let cleanName = serviceName.split(' (')[0]; 
+        
+        let price = "-";
+        
+        // ดึงข้อมูล
+        if (SERVICE_PRICES[currentApp] && SERVICE_PRICES[currentApp][cleanName]) {
+            price = SERVICE_PRICES[currentApp][cleanName];
+        } else {
+             // Fallback กรณีหาไม่เจอจริงๆ หรือเป็น Wellness แบบเก่า
+             if (currentApp === 'wellness') {
+                 if (serviceName.includes("1,000")) price = "1,000 บาท";
+                 else if (serviceName.includes("500")) price = "500 บาท";
+                 else if (serviceName.includes("650")) price = "650 บาท";
+                 else if (serviceName.includes("550")) price = "550 บาท";
+             }
+        }
+
+        let tag = document.getElementById('price-tag');
+        let val = document.getElementById('price-val');
+        
+        if (price !== "-" && price !== undefined) {
+            val.innerHTML = price; 
+            tag.style.display = 'block';
+        } else {
+            tag.style.display = 'none';
+        }
+        
+        update2HrPrice();
+    }
+
+    function update2HrPrice() {
+        let is2Hr = document.getElementById('inp-2hr') ? document.getElementById('inp-2hr').checked : false;
+        if (is2Hr) {
+             let currentText = document.getElementById('price-val').innerHTML;
+             if (!currentText.includes("+200")) {
+                 document.getElementById('price-val').innerHTML = currentText + " <span style='color:#e65100; display:block; margin-top:2px;'>(+200 บาท ชม.ถัดไป)</span>";
+             }
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        let chk2hr = document.getElementById('inp-2hr');
+        if(chk2hr) {
+            chk2hr.addEventListener('change', update2HrPrice);
+            chk2hr.addEventListener('change', function() { 
+                 if(!this.checked) updatePriceDisplay(); // Reset
+            });
+        }
+    });
+
     document.addEventListener("visibilitychange", function() {
         if (document.visibilityState === 'visible' && currentApp !== '') {
              if(refreshInterval) clearInterval(refreshInterval);
@@ -957,5 +1069,4 @@
     });
   </script>
 </body>
-
 </html>
