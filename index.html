@@ -26,6 +26,29 @@
     .hidden { display: none !important; }
     .fade-in { animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
 
+    /* --- Language Button (NEW) --- */
+    .lang-btn {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        z-index: 9999;
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-family: 'Prompt', sans-serif;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .lang-btn:hover { background: var(--primary); color: white; }
+    .lang-btn img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
+
     /* --- Layout & Components --- */
     .home-container { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 40px; }
     .hero-banner { width: 100%; height: 280px; background-image: url('https://img2.pic.in.th/pic/2e56ebb3c838125fd55c9db5dcd51baf.png'); background-size: cover; background-position: center; position: relative; border-radius: 0 0 30px 30px; overflow: hidden; box-shadow: var(--shadow-md); margin-bottom: -40px; z-index: 1; }
@@ -181,14 +204,18 @@
 </head>
 <body>
 
+  <button class="lang-btn" onclick="toggleLanguage()">
+    <i class="fas fa-globe"></i> <span id="lang-text">TH</span>
+  </button>
+
   <div id="view-home" class="home-container fade-in">
     <div class="hero-banner">
         <div class="hero-overlay">
             <img src="https://img2.pic.in.th/pic/6f7b352408393a1295f3000e7d9e6754.md.png" class="main-logo">
             <div class="home-title">
-                <h2>กลุ่มงานการแพทย์แผนไทยและการแพทย์ทางเลือก</h2>
-                <h1>โรงพยาบาลสะเดา</h1>
-                <div class="status-pill"><i class="fas fa-circle" style="color:#4caf50; font-size:0.6rem;"></i> ระบบออนไลน์ 24 ชม.</div>
+                <h2 data-i18n="dept_ttm_alt">กลุ่มงานการแพทย์แผนไทยและการแพทย์ทางเลือก</h2>
+                <h1 data-i18n="hospital_name">โรงพยาบาลสะเดา</h1>
+                <div class="status-pill"><i class="fas fa-circle" style="color:#4caf50; font-size:0.6rem;"></i> <span data-i18n="online_24">ระบบออนไลน์ 24 ชม.</span></div>
             </div>
         </div>
     </div>
@@ -197,25 +224,25 @@
         
         <div class="dept-card card-ttm" onclick="openApp('ttm')">
           <img src="https://img2.pic.in.th/pic/619e72dc2124132ccf4620717d4fa58d.md.png" class="dept-icon">
-          <div class="dept-info"><h3>แพทย์แผนไทย</h3><p>นวดรักษา, ประคบ, นวดส่งเสริมฯ</p></div>
+          <div class="dept-info"><h3 data-i18n="ttm_title">แพทย์แผนไทย</h3><p data-i18n="ttm_desc">นวดรักษา, ประคบ, นวดส่งเสริมฯ</p></div>
           <div class="arrow-btn"><i class="fas fa-chevron-right"></i></div>
         </div>
         
         <div class="dept-card card-tcm" onclick="openApp('tcm')">
           <img src="https://img2.pic.in.th/pic/--06d2d95efaba2074.md.png" class="dept-icon">
-          <div class="dept-info"><h3>แพทย์แผนจีน</h3><p>ฝังเข็ม, ครอบแก้ว, ฝังเข็มใบหน้า</p></div>
+          <div class="dept-info"><h3 data-i18n="tcm_title">แพทย์แผนจีน</h3><p data-i18n="tcm_desc">ฝังเข็ม, ครอบแก้ว, ฝังเข็มใบหน้า</p></div>
           <div class="arrow-btn"><i class="fas fa-chevron-right"></i></div>
         </div>
 
         <div class="dept-card card-postpartum" onclick="openApp('postpartum')">
           <img src="https://img2.pic.in.th/pic/eb06897c542c79b64690c8e794fa84a4.png" class="dept-icon">
-          <div class="dept-info"><h3>บริการหลังคลอด</h3><p>หลังคลอดธรรมชาติ 7 วัน / หลังผ่า 1 เดือน</p></div>
+          <div class="dept-info"><h3 data-i18n="pp_title">บริการหลังคลอด</h3><p data-i18n="pp_desc">หลังคลอดธรรมชาติ 7 วัน / หลังผ่า 1 เดือน</p></div>
           <div class="arrow-btn"><i class="fas fa-chevron-right"></i></div>
         </div>
 
         <div class="dept-card card-steam" onclick="openApp('steam')">
           <img src="https://img2.pic.in.th/pic/-3b445847427fcbfd.png" class="dept-icon">
-          <div class="dept-info"><h3>อบไอน้ำสมุนไพร</h3><p>ช่วยการไหลเวียนโลหิต ภูมิแพ้ นอนไม่หลับ</p></div>
+          <div class="dept-info"><h3 data-i18n="steam_title">อบไอน้ำสมุนไพร</h3><p data-i18n="steam_desc">ช่วยการไหลเวียนโลหิต ภูมิแพ้ นอนไม่หลับ</p></div>
           <div class="arrow-btn"><i class="fas fa-chevron-right"></i></div>
         </div>
 
@@ -223,7 +250,7 @@
             <img src="https://img2.pic.in.th/pic/Wellness-logo.png" class="dept-icon" style="background:white; padding:2px;">
             <div class="dept-info">
                 <h3>Wellness Clinic</h3>
-                <p>สครับเกลือ, สปาผิว, นวดอโรม่า</p>
+                <p data-i18n="well_desc">สครับเกลือ, สปาผิว, นวดอโรม่า</p>
             </div>
             <div class="arrow-btn"><i class="fas fa-chevron-right"></i></div>
         </div>
@@ -231,8 +258,8 @@
         <div class="info-card">
             <img src="https://img5.pic.in.th/file/secure-sv1/d26f2357c0618da568d3dcf464837fda.png" class="info-img">
             <div class="info-content">
-                <h4><i class="fas fa-hospital-alt" style="color:#2e7d32;"></i> ตึกอุบัติเหตุ 4 ชั้น (ตึกมรกต)</h4>
-                <p>สถานที่ให้บริการแพทย์แผนไทย ชั้น 4</p>
+                <h4><i class="fas fa-hospital-alt" style="color:#2e7d32;"></i> <span data-i18n="building_info">ตึกอุบัติเหตุ 4 ชั้น (ตึกมรกต)</span></h4>
+                <p data-i18n="floor_info">สถานที่ให้บริการแพทย์แผนไทย ชั้น 4</p>
             </div>
         </div>
     </div>
@@ -245,7 +272,7 @@
         <img id="app-logo" src="" class="app-logo">
         <div class="header-titles">
           <h1 id="app-title"></h1>
-          <p>ตารางนัด (Real-time) <span id="loadingIndicator" class="mini-loader"><i class="fas fa-circle-notch fa-spin"></i></span></p>
+          <p><span data-i18n="sched_realtime">ตารางนัด (Real-time)</span> <span id="loadingIndicator" class="mini-loader"><i class="fas fa-circle-notch fa-spin"></i></span></p>
         </div>
       </div>
       <div id="liveClock" class="live-clock"><i class="far fa-clock"></i> <span>...</span></div>
@@ -255,7 +282,7 @@
     <div class="container">
       <div id="contentArea"></div>
       <div class="contact-section">
-        <p style="font-weight:600; margin-bottom:15px; font-size:0.9rem; color:#64748b;">ช่องทางติดต่อ</p>
+        <p style="font-weight:600; margin-bottom:15px; font-size:0.9rem; color:#64748b;" data-i18n="contact_channel">ช่องทางติดต่อ</p>
         <div style="white-space:nowrap;">
           <a href="https://www.facebook.com/ttmsadao" target="_blank" class="social-btn btn-fb"><i class="fab fa-facebook-f"></i></a>
           <a href="https://lin.ee/Ip6j7HP" target="_blank" class="social-btn btn-line"><i class="fab fa-line"></i></a>
@@ -263,7 +290,7 @@
           <a href="tel:0842671735" class="social-btn btn-phone"><i class="fas fa-phone"></i></a>
           <a href="tel:074379994" class="social-btn btn-phone" style="background:#555"><i class="fas fa-phone-alt"></i></a>
         </div>
-        <div style="font-size:0.85rem; color:#94a3b8; margin-top:12px;">โทร: 084-267-1735 หรือ 074-379-994</div>
+        <div style="font-size:0.85rem; color:#94a3b8; margin-top:12px;"><span data-i18n="call">โทร</span>: 084-267-1735 <span data-i18n="or">หรือ</span> 074-379-994</div>
       </div>
     </div>
   </div>
@@ -272,34 +299,34 @@
     <div class="modal-card">
       <div id="step-form">
         <div class="modal-header">
-            <span><i class="fas fa-edit"></i> กรอกข้อมูลจองคิว</span>
+            <span><i class="fas fa-edit"></i> <span data-i18n="form_title">กรอกข้อมูลจองคิว</span></span>
             <button id="btn-use-old" class="btn-autofill" onclick="fillUserData()">
-                <i class="fas fa-history"></i> ใช้ข้อมูลเดิม
+                <i class="fas fa-history"></i> <span data-i18n="use_old_data">ใช้ข้อมูลเดิม</span>
             </button>
         </div>
 
         <div class="form-group">
-          <label class="form-label">ชื่อ-นามสกุล</label>
-          <input type="text" id="inp-name" class="form-control" placeholder="เช่น ใจดี มีสุข" autocomplete="off">
+          <label class="form-label" data-i18n="lbl_name">ชื่อ-นามสกุล</label>
+          <input type="text" id="inp-name" class="form-control" placeholder="เช่น ใจดี มีสุข" data-i18n-ph="ph_name" autocomplete="off">
           <div id="list-name" class="autocomplete-list"></div>
         </div>
         
         <div class="form-group">
-          <label class="form-label">เบอร์โทรศัพท์</label>
+          <label class="form-label" data-i18n="lbl_tel">เบอร์โทรศัพท์</label>
           <input type="tel" id="inp-tel" class="form-control" placeholder="08x-xxx-xxxx" autocomplete="off">
           <div id="list-tel" class="autocomplete-list"></div>
         </div>
         
         <div id="normal-fields">
             <div class="form-group">
-              <label class="form-label">เลือกบริการ</label>
+              <label class="form-label" data-i18n="lbl_service">เลือกบริการ</label>
               <select id="inp-service" class="form-control" onchange="updatePriceDisplay()"></select>
               
               <div id="price-tag" style="margin-top:10px; display:none; animation:fadeIn 0.3s;">
                   <div style="background:#f0f9ff; color:#0369a1; padding:12px 15px; border-radius:12px; font-size:0.9rem; border:1px solid #bae6fd; display:flex; align-items:flex-start; gap:10px; line-height:1.5;">
                       <i class="fas fa-circle-info" style="margin-top:4px; font-size:1.1rem;"></i> 
                       <div>
-                          <span style="font-weight:700; display:block; margin-bottom:2px;">อัตราค่าบริการ/สิทธิ:</span>
+                          <span style="font-weight:700; display:block; margin-bottom:2px;" data-i18n="rate_rights">อัตราค่าบริการ/สิทธิ:</span>
                           <span id="price-val">-</span>
                       </div>
                   </div>
@@ -307,12 +334,12 @@
             </div>
 
             <div class="form-group" id="group-staff">
-              <label class="form-label">ผู้ให้บริการ (ผู้ช่วยแพทย์แผนไทย)</label>
+              <label class="form-label"><span data-i18n="lbl_provider">ผู้ให้บริการ (ผู้ช่วยแพทย์แผนไทย)</span></label>
               <div class="custom-select-wrapper">
                  <div class="custom-select" id="staff-trigger" onclick="toggleStaffDropdown()">
                      <div class="select-selected">
                          <img id="staff-display-img" src="https://img2.pic.in.th/pic/1c189d2a727f532d391a5ab0604ccd2f.png" class="select-img" onerror="this.src='https://img2.pic.in.th/pic/1c189d2a727f532d391a5ab0604ccd2f.png'">
-                         <span id="staff-display-name">ไม่ระบุ</span>
+                         <span id="staff-display-name" data-i18n="unspecified">ไม่ระบุ</span>
                      </div>
                      <i class="fas fa-chevron-down select-arrow"></i>
                  </div>
@@ -324,82 +351,82 @@
             <div id="box-option-2hr" class="option-2hr-container">
                 <label class="option-2hr-label">
                     <input type="checkbox" id="inp-2hr" class="chk-2hr">
-                    <span><i class="fas fa-star" style="color:#f59e0b;"></i> จองต่อเนื่อง 2 ชั่วโมง (ว่าง)</span>
+                    <span><i class="fas fa-star" style="color:#f59e0b;"></i> <span data-i18n="book_2hr">จองต่อเนื่อง 2 ชั่วโมง (ว่าง)</span></span>
                 </label>
-                <div class="option-2hr-note">*ชั่วโมงที่ 2 ชำระเพิ่ม 200 บาท</div>
+                <div class="option-2hr-note" data-i18n="note_2hr">*ชั่วโมงที่ 2 ชำระเพิ่ม 200 บาท</div>
             </div>
         </div>
 
         <div id="postpartum-fields" class="hidden">
             <div class="form-group">
-              <label class="form-label">วันเดือนปี ที่คลอด</label>
+              <label class="form-label" data-i18n="lbl_birthdate">วันเดือนปี ที่คลอด</label>
               <input type="date" id="inp-birth-date" class="form-control">
             </div>
             <div class="form-group">
-              <label class="form-label">ประเภทการคลอด</label>
+              <label class="form-label" data-i18n="lbl_delivery_type">ประเภทการคลอด</label>
               <select id="inp-delivery-type" class="form-control">
-                <option value="">-- กรุณาเลือก --</option>
-                <option value="คลอดเองตามธรรมชาติ">คลอดเองตามธรรมชาติ</option>
-                <option value="ผ่าตัดคลอด">ผ่าตัดคลอด</option>
+                <option value="" data-i18n="pl_select">-- กรุณาเลือก --</option>
+                <option value="คลอดเองตามธรรมชาติ" data-i18n="natural_birth">คลอดเองตามธรรมชาติ</option>
+                <option value="ผ่าตัดคลอด" data-i18n="c_section">ผ่าตัดคลอด</option>
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">คลอดโรงพยาบาลอะไร</label>
-              <input type="text" id="inp-hospital" class="form-control" placeholder="ระบุชื่อโรงพยาบาล">
+              <label class="form-label" data-i18n="lbl_hospital">คลอดโรงพยาบาลอะไร</label>
+              <input type="text" id="inp-hospital" class="form-control" placeholder="ระบุชื่อโรงพยาบาล" data-i18n-ph="ph_hospital">
             </div>
             <div class="form-group" style="background:#fce7f3; padding:10px; border-radius:10px; border:1px dashed #ec4899; color:#9d174d; font-size:0.9rem;">
-                <i class="fas fa-info-circle"></i> เฉพาะสิทธิ <strong>ประกันสังคม</strong> มีค่าบริการ 500 บาท
+                <i class="fas fa-info-circle"></i> <span data-i18n="sso_fee">เฉพาะสิทธิ <strong>ประกันสังคม</strong> มีค่าบริการ 500 บาท</span>
             </div>
         </div>
 
         <div id="steam-fields" class="hidden">
            <div class="form-group">
-              <label class="form-label">เพศ</label>
+              <label class="form-label" data-i18n="lbl_gender">เพศ</label>
               <select id="inp-gender" class="form-control">
-                 <option value="หญิง">หญิง</option>
-                 <option value="ชาย">ชาย</option>
+                 <option value="หญิง" data-i18n="female">หญิง</option>
+                 <option value="ชาย" data-i18n="male">ชาย</option>
               </select>
            </div>
            
-           <label class="form-label">ผู้รับบริการเพิ่มเติม (ถ้ามี)</label>
+           <label class="form-label" data-i18n="lbl_extra_patient">ผู้รับบริการเพิ่มเติม (ถ้ามี)</label>
            <div id="extra-patients-container"></div>
            
            <button type="button" class="btn-add-patient" onclick="addPatient()">
-             <i class="fas fa-user-plus"></i> เพิ่มผู้รับบริการ
+             <i class="fas fa-user-plus"></i> <span data-i18n="btn_add_patient">เพิ่มผู้รับบริการ</span>
            </button>
-           <div style="font-size:0.8rem; color:#64748b; margin-top:5px;">*เพิ่มได้ไม่เกินจำนวนคิวว่างในรอบนี้</div>
+           <div style="font-size:0.8rem; color:#64748b; margin-top:5px;" data-i18n="limit_patient">*เพิ่มได้ไม่เกินจำนวนคิวว่างในรอบนี้</div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" id="lbl-note">หมายเหตุ (ถ้ามี)</label>
-          <textarea id="inp-note" class="form-control" placeholder="เช่น กระดูกหัก/ผ่าตัด ในช่วง 3 เดือนนี้, กำลังมีประจำเดือน ,มีไข้สูง"></textarea>
+          <label class="form-label" id="lbl-note" data-i18n="lbl_note">หมายเหตุ (ถ้ามี)</label>
+          <textarea id="inp-note" class="form-control" placeholder="เช่น กระดูกหัก/ผ่าตัด ในช่วง 3 เดือนนี้, กำลังมีประจำเดือน ,มีไข้สูง" data-i18n-ph="ph_note"></textarea>
         </div>
 
         <div class="btn-group">
-          <button class="btn btn-cancel" onclick="closeModal()">ยกเลิก</button>
-          <button class="btn btn-confirm" onclick="goToSummary()">บันทึก</button>
+          <button class="btn btn-cancel" onclick="closeModal()" data-i18n="btn_cancel">ยกเลิก</button>
+          <button class="btn btn-confirm" onclick="goToSummary()" data-i18n="btn_save">บันทึก</button>
         </div>
       </div>
 
       <div id="step-summary" class="hidden">
-        <div class="modal-header"><i class="fas fa-list-check"></i> ตรวจสอบข้อมูล</div>
+        <div class="modal-header"><i class="fas fa-list-check"></i> <span data-i18n="check_info">ตรวจสอบข้อมูล</span></div>
         <div class="summary-box" id="summary-content"></div>
         <div class="btn-group">
-          <button class="btn btn-cancel" onclick="backToForm()">แก้ไข</button>
-          <button class="btn btn-confirm" onclick="confirmBooking()">ยืนยันการจอง</button>
+          <button class="btn btn-cancel" onclick="backToForm()" data-i18n="btn_edit">แก้ไข</button>
+          <button class="btn btn-confirm" onclick="confirmBooking()" data-i18n="btn_confirm_booking">ยืนยันการจอง</button>
         </div>
       </div>
 
       <div id="step-warning" class="hidden">
         <div class="warning-popup">
           <div class="warning-icon"><i class="fas fa-exclamation-circle"></i></div>
-          <div class="warning-text">
+          <div class="warning-text" id="warning-text-content">
             <strong>โปรดทราบ!</strong><br>
             คิวจะถูกจองสำเร็จ<br>
             ต่อเมื่อเจ้าหน้าที่ <u>ตอบรับทางไลน์</u> แล้วเท่านั้น
           </div>
           <button class="btn btn-confirm" style="width:100%" onclick="sendToLine()">
-            <i class="fab fa-line"></i> รับทราบ & ส่งข้อมูลเข้าไลน์
+            <i class="fab fa-line"></i> <span data-i18n="ack_send">รับทราบ & ส่งข้อมูลเข้าไลน์</span>
           </button>
         </div>
       </div>
@@ -407,6 +434,184 @@
   </div>
 
   <script>
+    // **********************************************************
+    // Language Configuration
+    // **********************************************************
+    let currentLang = 'th'; // Default language
+
+    const translations = {
+        th: {
+            dept_ttm_alt: "กลุ่มงานการแพทย์แผนไทยและการแพทย์ทางเลือก",
+            hospital_name: "โรงพยาบาลสะเดา",
+            online_24: "ระบบออนไลน์ 24 ชม.",
+            ttm_title: "แพทย์แผนไทย",
+            ttm_desc: "นวดรักษา, ประคบ, นวดส่งเสริมฯ",
+            tcm_title: "แพทย์แผนจีน",
+            tcm_desc: "ฝังเข็ม, ครอบแก้ว, ฝังเข็มใบหน้า",
+            pp_title: "บริการหลังคลอด",
+            pp_desc: "หลังคลอดธรรมชาติ 7 วัน / หลังผ่า 1 เดือน",
+            steam_title: "อบไอน้ำสมุนไพร",
+            steam_desc: "ช่วยการไหลเวียนโลหิต ภูมิแพ้ นอนไม่หลับ",
+            well_desc: "สครับเกลือ, สปาผิว, นวดอโรม่า",
+            building_info: "ตึกอุบัติเหตุ 4 ชั้น (ตึกมรกต)",
+            floor_info: "สถานที่ให้บริการแพทย์แผนไทย ชั้น 4",
+            sched_realtime: "ตารางนัด (Real-time)",
+            contact_channel: "ช่องทางติดต่อ",
+            call: "โทร",
+            or: "หรือ",
+            form_title: "กรอกข้อมูลจองคิว",
+            use_old_data: "ใช้ข้อมูลเดิม",
+            lbl_name: "ชื่อ-นามสกุล",
+            ph_name: "เช่น ใจดี มีสุข",
+            lbl_tel: "เบอร์โทรศัพท์",
+            lbl_service: "เลือกบริการ",
+            rate_rights: "อัตราค่าบริการ/สิทธิ:",
+            lbl_provider: "ผู้ให้บริการ (ผู้ช่วยแพทย์แผนไทย)",
+            unspecified: "ไม่ระบุ",
+            unspecified_any: "ไม่ระบุ (ใครก็ได้)",
+            book_2hr: "จองต่อเนื่อง 2 ชั่วโมง (ว่าง)",
+            note_2hr: "*ชั่วโมงที่ 2 ชำระเพิ่ม 200 บาท",
+            lbl_birthdate: "วันเดือนปี ที่คลอด",
+            lbl_delivery_type: "ประเภทการคลอด",
+            pl_select: "-- กรุณาเลือก --",
+            natural_birth: "คลอดเองตามธรรมชาติ",
+            c_section: "ผ่าตัดคลอด",
+            lbl_hospital: "คลอดโรงพยาบาลอะไร",
+            ph_hospital: "ระบุชื่อโรงพยาบาล",
+            sso_fee: "เฉพาะสิทธิ <strong>ประกันสังคม</strong> มีค่าบริการ 500 บาท",
+            lbl_gender: "เพศ",
+            female: "หญิง",
+            male: "ชาย",
+            lbl_extra_patient: "ผู้รับบริการเพิ่มเติม (ถ้ามี)",
+            btn_add_patient: "เพิ่มผู้รับบริการ",
+            limit_patient: "*เพิ่มได้ไม่เกินจำนวนคิวว่างในรอบนี้",
+            lbl_note: "หมายเหตุ (ถ้ามี)",
+            ph_note: "เช่น กระดูกหัก/ผ่าตัด ในช่วง 3 เดือนนี้...",
+            btn_cancel: "ยกเลิก",
+            btn_save: "บันทึก",
+            check_info: "ตรวจสอบข้อมูล",
+            btn_edit: "แก้ไข",
+            btn_confirm_booking: "ยืนยันการจอง",
+            ack_send: "รับทราบ & ส่งข้อมูลเข้าไลน์",
+            avail: "ว่าง",
+            queue: "คิว",
+            full: "เต็ม",
+            closed: "งด",
+            round_m: "รอบชาย",
+            round_f: "รอบหญิง",
+            loading: "กำลังโหลด...",
+            no_service: "⛔ งดให้บริการ",
+            no_slot: "ไม่มีรอบว่างในวันนี้",
+            dept: "แผนก",
+            service: "บริการ",
+            datetime: "วันเวลา",
+            details: "รายละเอียด",
+            note: "หมายเหตุ",
+            warning_msg: "<strong>โปรดทราบ!</strong><br>คิวจะถูกจองสำเร็จ<br>ต่อเมื่อเจ้าหน้าที่ <u>ตอบรับทางไลน์</u> แล้วเท่านั้น"
+        },
+        en: {
+            dept_ttm_alt: "Thai Traditional & Alternative Medicine",
+            hospital_name: "Sadao Hospital",
+            online_24: "Online System 24 hrs.",
+            ttm_title: "Thai Traditional Medicine",
+            ttm_desc: "Treatment Massage, Compress, Health Massage",
+            tcm_title: "Chinese Medicine",
+            tcm_desc: "Acupuncture, Cupping, Facial Acupuncture",
+            pp_title: "Postpartum Care",
+            pp_desc: "Natural Birth 7 Days / C-Section 1 Month",
+            steam_title: "Herbal Steam",
+            steam_desc: "Circulation, Allergy, Insomnia",
+            well_desc: "Salt Scrub, Skin Spa, Aroma Massage",
+            building_info: "Accident Building 4 Floors (Emerald Bldg)",
+            floor_info: "Service Location: 4th Floor",
+            sched_realtime: "Schedule (Real-time)",
+            contact_channel: "Contact Channels",
+            call: "Call",
+            or: "or",
+            form_title: "Booking Form",
+            use_old_data: "Use History",
+            lbl_name: "Full Name",
+            ph_name: "e.g. John Doe",
+            lbl_tel: "Phone Number",
+            lbl_service: "Select Service",
+            rate_rights: "Service Fee/Rights:",
+            lbl_provider: "Provider (TTM Assistant)",
+            unspecified: "Unspecified",
+            unspecified_any: "Any Provider",
+            book_2hr: "Book 2 Consecutive Hours (Avail)",
+            note_2hr: "*2nd Hour: Additional 200 THB",
+            lbl_birthdate: "Date of Birth (Baby)",
+            lbl_delivery_type: "Delivery Type",
+            pl_select: "-- Please Select --",
+            natural_birth: "Natural Birth",
+            c_section: "C-Section",
+            lbl_hospital: "Hospital Name",
+            ph_hospital: "Specify Hospital Name",
+            sso_fee: "<strong>Social Security</strong> rights fee: 500 THB",
+            lbl_gender: "Gender",
+            female: "Female",
+            male: "Male",
+            lbl_extra_patient: "Additional Patients (If any)",
+            btn_add_patient: "Add Patient",
+            limit_patient: "*Cannot exceed available slots",
+            lbl_note: "Note (Optional)",
+            ph_note: "e.g. Broken bone/Surgery in last 3 months...",
+            btn_cancel: "Cancel",
+            btn_save: "Save",
+            check_info: "Verify Information",
+            btn_edit: "Edit",
+            btn_confirm_booking: "Confirm Booking",
+            ack_send: "Acknowledge & Send to LINE",
+            avail: "Avail",
+            queue: "Q",
+            full: "Full",
+            closed: "Closed",
+            round_m: "Male Round",
+            round_f: "Female Round",
+            loading: "Loading...",
+            no_service: "⛔ Service Closed",
+            no_slot: "No slots available today",
+            dept: "Department",
+            service: "Service",
+            datetime: "Date/Time",
+            details: "Details",
+            note: "Note",
+            warning_msg: "<strong>Please Note!</strong><br>Booking is confirmed<br>only after staff <u>reply via LINE</u>."
+        }
+    };
+
+    function t(key) {
+        return translations[currentLang][key] || key;
+    }
+
+    function toggleLanguage() {
+        currentLang = (currentLang === 'th') ? 'en' : 'th';
+        document.getElementById('lang-text').innerText = currentLang.toUpperCase();
+        
+        // Update Static Text
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            el.innerHTML = t(el.getAttribute('data-i18n'));
+        });
+        
+        // Update Placeholders
+        document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+            el.placeholder = t(el.getAttribute('data-i18n-ph'));
+        });
+
+        // Update Dynamic Content (Header Title)
+        if (currentApp && APP_CONFIG[currentApp]) {
+             let conf = APP_CONFIG[currentApp];
+             document.getElementById('app-title').innerText = (currentLang === 'en') ? conf.titleEn : conf.title;
+        }
+
+        // Re-render Slots if view is dashboard
+        if (!document.getElementById('view-dashboard').classList.contains('hidden') && globalData.length > 0) {
+            renderScroller();
+            renderSlots(selectedIndex);
+            updatePriceDisplay();
+        }
+    }
+
     // **********************************************************
     // URL Web App (Backend) ของคุณ
     // **********************************************************
@@ -440,21 +645,54 @@
         }
     };
 
+    // English Prices (Simple mapping for demo)
+    const SERVICE_PRICES_EN = {
+        ttm: {
+            "Treatment Massage": "Reimbursable (SSO self-pay 250 THB)",
+            "Health Massage": "200 THB (+Herbal Compress +50 THB)", 
+            "Foot Massage": "200 THB"
+        },
+        tcm: {
+            "Acupuncture": "Gov Reimbursable / Others 150-200 THB",
+            "Cupping": "150 THB",
+            "Facial Acupuncture": "300 THB",
+            "Consultation": "Free"
+        },
+        postpartum: {
+            "Postpartum Care": "Reimbursable (SSO self-pay 500 THB)"
+        },
+        steam: {
+            "Herbal Steam": "Reimbursable (SSO self-pay 100 THB)"
+        },
+        wellness: {
+            "Salt Scrub": "500 THB",
+            "Skin Spa": "650 THB",
+            "Aroma Massage": "550 THB"
+        }
+    };
+
     // --- CONFIGURATION ---
     const APP_CONFIG = {
-      ttm: { title: "แพทย์แผนไทย", logo: "https://img2.pic.in.th/pic/6f7b352408393a1295f3000e7d9e6754.md.png", color: "#2e7d32", dark: "#1b5e20", func: "getTTMData" },
-      tcm: { title: "แพทย์แผนจีน", logo: "https://img2.pic.in.th/pic/--06d2d95efaba2074.md.png", color: "#e53935", dark: "#b71c1c", func: "getTCMData" },
-      postpartum: { title: "บริการหลังคลอด", logo: "https://img2.pic.in.th/pic/eb06897c542c79b64690c8e794fa84a4.png", color: "#ec4899", dark: "#be185d", func: "getPostpartumData" },
-      steam: { title: "อบไอน้ำสมุนไพร", logo: "https://img2.pic.in.th/pic/-3b445847427fcbfd.png", color: "#0288d1", dark: "#01579b", func: "getSteamData" },
-      wellness: { title: "Wellness Clinic", logo: "https://img2.pic.in.th/pic/Wellness-logo.png", color: "#D4AF37", dark: "#AA8C2C", func: "getWellnessData" }
+      ttm: { title: "แพทย์แผนไทย", titleEn: "Thai Traditional Medicine", logo: "https://img2.pic.in.th/pic/6f7b352408393a1295f3000e7d9e6754.md.png", color: "#2e7d32", dark: "#1b5e20", func: "getTTMData" },
+      tcm: { title: "แพทย์แผนจีน", titleEn: "Chinese Medicine", logo: "https://img2.pic.in.th/pic/--06d2d95efaba2074.md.png", color: "#e53935", dark: "#b71c1c", func: "getTCMData" },
+      postpartum: { title: "บริการหลังคลอด", titleEn: "Postpartum Care", logo: "https://img2.pic.in.th/pic/eb06897c542c79b64690c8e794fa84a4.png", color: "#ec4899", dark: "#be185d", func: "getPostpartumData" },
+      steam: { title: "อบไอน้ำสมุนไพร", titleEn: "Herbal Steam", logo: "https://img2.pic.in.th/pic/-3b445847427fcbfd.png", color: "#0288d1", dark: "#01579b", func: "getSteamData" },
+      wellness: { title: "Wellness Clinic", titleEn: "Wellness Clinic", logo: "https://img2.pic.in.th/pic/Wellness-logo.png", color: "#D4AF37", dark: "#AA8C2C", func: "getWellnessData" }
     };
 
     const SERVICE_OPTIONS = {
       ttm: ["นวดและประคบเพื่อการรักษา", "นวดตัวส่งเสริมสุขภาพ(ชำระเงินเอง)", "นวดเท้าส่งเสริมสุขภาพ(ชำระเงินเอง)"],
       tcm: ["ฝังเข็มเพื่อการรักษา", "ครอบแก้ว", "ฝังเข็มใบหน้า", "ปรึกษาแพทย์แผนจีน"]
     };
+    
+    // Mapped for English Display in Dropdown
+    const SERVICE_OPTIONS_EN = {
+      ttm: ["Treatment Massage", "Health Massage", "Foot Massage"],
+      tcm: ["Acupuncture", "Cupping", "Facial Acupuncture", "Consultation"]
+    };
 
     const WELLNESS_PRICES = { "สครับเกลือ": "500.-", "สปาผิว": "650.-", "นวดน้ำมันอโรม่า": "550.-" };
+    const WELLNESS_PRICES_EN = { "Salt Scrub": "500.-", "Skin Spa": "650.-", "Aroma Massage": "550.-" };
 
     const STAFF_IMAGES = {
         "รจนา M": "https://img2.pic.in.th/pic/-b38b682db8ac596b.png",
@@ -497,10 +735,15 @@
     function startClock() {
       setInterval(() => {
         let now = new Date();
-        let dateStr = now.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
-        let timeStr = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-        let year = now.getFullYear() + 543;
-        dateStr = dateStr.replace(now.getFullYear(), year);
+        let locale = (currentLang === 'en') ? 'en-US' : 'th-TH';
+        let dateStr = now.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
+        let timeStr = now.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+        
+        if (currentLang === 'th') {
+            let year = now.getFullYear() + 543;
+            dateStr = dateStr.replace(now.getFullYear(), year);
+        }
+        
         let el = document.querySelector('#liveClock span');
         if(el) el.innerText = `${dateStr} ${timeStr}`;
       }, 1000);
@@ -517,7 +760,7 @@
           document.documentElement.style.setProperty('--primary', conf.color);
           document.documentElement.style.setProperty('--primary-dark', conf.dark);
           
-          document.getElementById('app-title').innerText = conf.title;
+          document.getElementById('app-title').innerText = (currentLang === 'en') ? conf.titleEn : conf.title;
           document.getElementById('app-logo').src = conf.logo;
           document.getElementById('view-home').classList.add('hidden');
           document.getElementById('view-dashboard').classList.remove('hidden');
@@ -541,7 +784,7 @@
       if (isFetching || (!isFirstLoad && document.hidden)) return;
       isFetching = true;
       if (isFirstLoad) {
-         document.getElementById('contentArea').innerHTML = '<div style="text-align:center;padding:50px;color:#999"><i class="fas fa-circle-notch fa-spin"></i> กำลังโหลด...</div>';
+         document.getElementById('contentArea').innerHTML = `<div style="text-align:center;padding:50px;color:#999"><i class="fas fa-circle-notch fa-spin"></i> ${t('loading')}</div>`;
       } else {
          document.getElementById('loadingIndicator').classList.add('show');
       }
@@ -575,10 +818,13 @@
     function renderScroller() {
       let html = '';
       let thDays = ["อา.","จ.","อ.","พ.","พฤ.","ศ.","ส."];
+      let enDays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+      let days = (currentLang === 'en') ? enDays : thDays;
+
       globalData.forEach((d, i) => {
         let color = DAY_COLORS[d.dayOfWeek];
         let activeClass = (i === selectedIndex) ? 'active' : '';
-        html += `<div class="date-chip ${activeClass}" style="--day-color: ${color}" onclick="selectDate(this, ${i})"><small>${thDays[d.dayOfWeek]}</small><span>${d.displayDate.split(" ")[0]}</span></div>`;
+        html += `<div class="date-chip ${activeClass}" style="--day-color: ${color}" onclick="selectDate(this, ${i})"><small>${days[d.dayOfWeek]}</small><span>${d.displayDate.split(" ")[0]}</span></div>`;
       });
       document.getElementById('dateScroller').innerHTML = html;
     }
@@ -594,10 +840,12 @@
       let day = globalData[index];
       let container = document.getElementById('contentArea');
       let dayColor = DAY_COLORS[day.dayOfWeek];
+      
+      // Update header date (Should ideally parse and reformat for EN, but keeping simple for now)
       let headerHtml = `<div class="selected-date-header"><span class="header-bar" style="background-color: ${dayColor}"></span>${day.fullLabel || day.displayDate}</div>`;
 
       if (day.status === 'no_data') {
-        container.innerHTML = headerHtml + `<div style="text-align:center;padding:40px;color:#cbd5e1"><h3>⛔ งดให้บริการ</h3><p>ไม่มีรอบว่างในวันนี้</p></div>`;
+        container.innerHTML = headerHtml + `<div style="text-align:center;padding:40px;color:#cbd5e1"><h3>${t('no_service')}</h3><p>${t('no_slot')}</p></div>`;
         return;
       }
 
@@ -608,6 +856,10 @@
 
         let isFull = (val.includes('เต็ม') || val.includes('งด'));
         let displayVal = val;
+        
+        // Translate status
+        if (val.includes('เต็ม')) displayVal = t('full');
+
         let count = slot.count || 0;
         let slotGender = slot.gender || "";
 
@@ -616,10 +868,10 @@
         if (currentApp === 'steam' && slotGender !== "" && !isFull) {
             if (slotGender.includes("ชาย")) {
                 genderClass = "gender-male";
-                genderIcon = '<div style="font-size:0.75rem; color:#1565c0;"><i class="fas fa-mars"></i> รอบชาย</div>';
+                genderIcon = `<div style="font-size:0.75rem; color:#1565c0;"><i class="fas fa-mars"></i> ${t('round_m')}</div>`;
             } else if (slotGender.includes("หญิง")) {
                 genderClass = "gender-female";
-                genderIcon = '<div style="font-size:0.75rem; color:#ad1457;"><i class="fas fa-venus"></i> รอบหญิง</div>';
+                genderIcon = `<div style="font-size:0.75rem; color:#ad1457;"><i class="fas fa-venus"></i> ${t('round_f')}</div>`;
             }
         }
 
@@ -632,7 +884,7 @@
                 }
                 if (count > 5) iconsHtml += '<span style="font-size:0.8rem; opacity:0.7;">+</span>';
                 iconsHtml += '</div>';
-                let textHtml = `<span style="font-weight:600; font-size:0.9rem;">ว่าง ${count} คิว</span>`;
+                let textHtml = `<span style="font-weight:600; font-size:0.9rem;">${t('avail')} ${count} ${t('queue')}</span>`;
                 displayVal = `<div style="display:flex; flex-direction:column; align-items:flex-end;">${genderIcon}<div style="display:flex; align-items:center;">${iconsHtml}${textHtml}</div></div>`;
             }
         }
@@ -705,9 +957,9 @@
     function renderStaffList(availableStaffList) {
         const optionsContainer = document.getElementById('staff-options');
         optionsContainer.innerHTML = '';
-        let html = `<div class="select-item" onclick="selectStaff('ไม่ระบุ', '${DEFAULT_IMG}', false)">
+        let html = `<div class="select-item" onclick="selectStaff('${t('unspecified')}', '${DEFAULT_IMG}', false)">
                         <img src="${DEFAULT_IMG}" class="item-img" onerror="this.src='${DEFAULT_IMG}'">
-                        <div class="item-text">ไม่ระบุ (ใครก็ได้)</div>
+                        <div class="item-text">${t('unspecified_any')}</div>
                     </div>`;
         if (availableStaffList && availableStaffList.length > 0) {
             availableStaffList.forEach(sheetName => {
@@ -717,12 +969,12 @@
                 html += `<div class="select-item" onclick="selectStaff('${displayName}', '${img}', ${is2HrAvailable})">
                             <img src="${img}" class="item-img" onerror="this.src='${DEFAULT_IMG}'">
                             <div class="item-text" style="flex:1;">${displayName}</div>
-                            ${is2HrAvailable ? '<div class="badge-2hr"><i class="fas fa-check-circle"></i> ว่าง 2 ชม.</div>' : ''}
+                            ${is2HrAvailable ? `<div class="badge-2hr"><i class="fas fa-check-circle"></i> ${t('avail')} 2h</div>` : ''}
                         </div>`;
             });
         }
         optionsContainer.innerHTML = html;
-        selectStaff('ไม่ระบุ', DEFAULT_IMG, false);
+        selectStaff(t('unspecified'), DEFAULT_IMG, false);
     }
 
     function loadUserData() {
@@ -747,7 +999,7 @@
 
     function openBooking(time, dateFull, dayIndex, staffList, availableCount, slotGender) {
       try {
-          bookingData = { dept: APP_CONFIG[currentApp].title, date: dateFull, time: time, is2Hr: false };
+          bookingData = { dept: (currentLang === 'en' ? APP_CONFIG[currentApp].titleEn : APP_CONFIG[currentApp].title), date: dateFull, time: time, is2Hr: false };
           currentSlotCapacity = availableCount || 0;
           
           document.getElementById('inp-name').value = '';
@@ -777,38 +1029,32 @@
 
           if (currentApp === 'postpartum') {
               document.getElementById('postpartum-fields').classList.remove('hidden');
-              document.getElementById('inp-note').placeholder = "เช่น น้ำนมไหลน้อย คัดตึงเต้านม";
-              document.getElementById('lbl-note').innerText = "ระบุอาการเพิ่มเติม (ถ้ามี)";
               bookingData.staff = "ทีมหลังคลอด";
-              bookingData.service = "บริการมารดาหลังคลอด";
+              bookingData.service = (currentLang === 'en') ? "Postpartum Care" : "บริการมารดาหลังคลอด";
               
               // เรียกให้โชว์ราคาของ Postpartum ทันที
-              document.getElementById('inp-service').value = "บริการมารดาหลังคลอด";
+              document.getElementById('inp-service').value = bookingData.service;
               updatePriceDisplay();
 
           } else if (currentApp === 'steam') {
               document.getElementById('steam-fields').classList.remove('hidden');
-              document.getElementById('inp-note').placeholder = "ระบุเพิ่มเติม (ถ้ามี)";
-              document.getElementById('lbl-note').innerText = "หมายเหตุ";
               bookingData.staff = "ห้องอบไอน้ำ";
-              bookingData.service = "อบไอน้ำสมุนไพร";
+              bookingData.service = (currentLang === 'en') ? "Herbal Steam" : "อบไอน้ำสมุนไพร";
               document.getElementById('extra-patients-container').innerHTML = '';
               patientCount = 1;
               
               if (slotGender && slotGender.includes('ชาย')) {
-                 document.getElementById('inp-gender').value = 'ชาย';
+                 document.getElementById('inp-gender').value = 'ชาย'; // Value stays thai for logic
               } else if (slotGender && slotGender.includes('หญิง')) {
                  document.getElementById('inp-gender').value = 'หญิง';
               }
               
               // เรียกให้โชว์ราคาของ Steam ทันที
-              document.getElementById('inp-service').value = "อบไอน้ำสมุนไพร";
+              document.getElementById('inp-service').value = bookingData.service;
               updatePriceDisplay();
 
           } else {
               document.getElementById('normal-fields').classList.remove('hidden');
-              document.getElementById('inp-note').placeholder = "เช่น กระดูกหัก/ผ่าตัด ในช่วง 3 เดือนนี้...";
-              document.getElementById('lbl-note').innerText = "หมายเหตุ (ถ้ามี)";
               
               let select = document.getElementById('inp-service');
               select.innerHTML = '';
@@ -816,35 +1062,52 @@
               if (currentApp === 'wellness') {
                   document.getElementById('group-staff').classList.add('hidden');
                   document.getElementById('inp-staff-val').value = "Wellness Center";
+                  
+                  // Use translated list if possible
+                  let sourceList = (currentLang === 'en' && staffList) ? staffList.map(s => {
+                      // Map Thai keys to English
+                      if(s == "สครับเกลือ") return "Salt Scrub";
+                      if(s == "สปาผิว") return "Skin Spa";
+                      if(s == "นวดน้ำมันอโรม่า") return "Aroma Massage";
+                      return s;
+                  }) : staffList;
 
-                  if (staffList && staffList.length > 0) {
-                      staffList.forEach(s => {
-                          let price = WELLNESS_PRICES[s] || "";
+                  if (sourceList && sourceList.length > 0) {
+                      sourceList.forEach(s => {
+                          let price = (currentLang === 'en') ? (WELLNESS_PRICES_EN[s] || "") : (WELLNESS_PRICES[s] || "");
                           let displayLabel = price ? `${s} (${price})` : s;
                           
                           let opt = document.createElement('option');
-                          opt.value = displayLabel;
+                          opt.value = displayLabel; // Value contains name
                           opt.innerText = displayLabel;
                           select.appendChild(opt);
 
-                          if (s === "สปาผิว" && nextSlotStaffList.includes("สปาผิว")) {
+                          // Check 2HR logic (Keep Thai name for check logic)
+                          let thaiName = s;
+                          if (currentLang === 'en') {
+                             if(s == "Skin Spa") thaiName = "สปาผิว";
+                          }
+
+                          if (thaiName === "สปาผิว" && nextSlotStaffList.includes("สปาผิว")) {
                               let opt2 = document.createElement('option');
-                              opt2.value = `สปาผิว (2 ชม. 1,000.-)`;
-                              opt2.innerText = `สปาผิว (2 ชม. 1,000.-)`;
+                              let txt = (currentLang === 'en') ? `Skin Spa (2 hr 1,000.-)` : `สปาผิว (2 ชม. 1,000.-)`;
+                              opt2.value = txt;
+                              opt2.innerText = txt;
                               opt2.style.fontWeight = "bold";
                               opt2.style.color = "#b45309";
                               select.appendChild(opt2);
                           }
                       });
                   } else {
-                      let opt = document.createElement('option'); opt.innerText = "ไม่พบข้อมูลบริการ"; select.appendChild(opt);
+                      let opt = document.createElement('option'); opt.innerText = t('no_service'); select.appendChild(opt);
                   }
 
               } else {
-                 if (SERVICE_OPTIONS[currentApp]) {
-                     SERVICE_OPTIONS[currentApp].forEach(s => {
-                       let opt = document.createElement('option'); opt.value = s; opt.innerText = s; select.appendChild(opt);
-                     });
+                 let options = (currentLang === 'en') ? SERVICE_OPTIONS_EN[currentApp] : SERVICE_OPTIONS[currentApp];
+                 if (options) {
+                      options.forEach(s => {
+                        let opt = document.createElement('option'); opt.value = s; opt.innerText = s; select.appendChild(opt);
+                      });
                  }
               }
               
@@ -862,7 +1125,7 @@
               }
           } else if (currentApp === 'tcm') {
               document.getElementById('group-staff').classList.add('hidden');
-              document.getElementById('inp-staff-val').value = "แพทย์แผนจีน";
+              document.getElementById('inp-staff-val').value = (currentLang === 'en') ? "TCM Doctor" : "แพทย์แผนจีน";
           }
 
           loadUserData();
@@ -870,13 +1133,13 @@
           document.getElementById('bookingModal').classList.add('show');
       } catch (e) {
           console.error(e);
-          alert("เกิดข้อผิดพลาดในการเปิดจอง: " + e.message);
+          alert("Error: " + e.message);
       }
     }
 
     function addPatient() {
        if (patientCount >= currentSlotCapacity) {
-           alert("จำนวนผู้รับบริการเต็มโควต้าที่ว่างแล้ว (" + currentSlotCapacity + " คน)");
+           alert(t('limit_patient') + " (" + currentSlotCapacity + ")");
            return;
        }
        patientCount++;
@@ -885,12 +1148,12 @@
        div.className = 'extra-patient-item';
        div.innerHTML = `
           <div style="flex:1;">
-             <input type="text" class="form-control inp-extra-name" placeholder="ชื่อ-สกุล คนที่ ${patientCount}">
+             <input type="text" class="form-control inp-extra-name" placeholder="${t('lbl_name')} ${patientCount}">
           </div>
           <div style="width:100px;">
              <select class="form-control inp-extra-gender">
-                <option value="หญิง">หญิง</option>
-                <option value="ชาย">ชาย</option>
+                <option value="หญิง">${t('female')}</option>
+                <option value="ชาย">${t('male')}</option>
              </select>
           </div>
           <button type="button" class="btn-remove" onclick="removePatient(this)"><i class="fas fa-trash"></i></button>
@@ -909,7 +1172,7 @@
       document.querySelector('.modal-card').scrollTop = 0;
       let name = document.getElementById('inp-name').value.trim();
       let tel = document.getElementById('inp-tel').value.trim();
-      if(!name || !tel) { alert('กรุณากรอกชื่อและเบอร์โทรศัพท์'); return; }
+      if(!name || !tel) { alert((currentLang === 'en') ? 'Please enter Name and Phone' : 'กรุณากรอกชื่อและเบอร์โทรศัพท์'); return; }
       
       bookingData.name = name;
       bookingData.tel = tel;
@@ -920,15 +1183,15 @@
           let birthDate = document.getElementById('inp-birth-date').value;
           let deliveryType = document.getElementById('inp-delivery-type').value;
           let hospital = document.getElementById('inp-hospital').value;
-          if(!birthDate || !hospital || !deliveryType) { alert('กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
-          bookingData.extraInfo = `\nวันคลอด: ${birthDate}\nวิธีคลอด: ${deliveryType}\nรพ.: ${hospital}`;
+          if(!birthDate || !hospital || !deliveryType) { alert((currentLang === 'en') ? 'Please fill all fields' : 'กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
+          bookingData.extraInfo = `\n${t('lbl_birthdate')}: ${birthDate}\n${t('lbl_delivery_type')}: ${deliveryType}\n${t('lbl_hospital')}: ${hospital}`;
       } else if (currentApp === 'steam') {
           let mainGender = document.getElementById('inp-gender').value;
-          let extraInfoText = `\nเพศ: ${mainGender}`;
+          let extraInfoText = `\n${t('lbl_gender')}: ${mainGender}`;
           let extraNames = document.querySelectorAll('.inp-extra-name');
           let extraGenders = document.querySelectorAll('.inp-extra-gender');
           if (extraNames.length > 0) {
-              extraInfoText += `\n\nผู้ร่วมเข้าบริการ:`;
+              extraInfoText += `\n\n${t('lbl_extra_patient')}:`;
               extraNames.forEach((input, index) => {
                   let pName = input.value.trim();
                   let pGender = extraGenders[index].value;
@@ -936,7 +1199,7 @@
               });
           }
           bookingData.extraInfo = extraInfoText;
-          bookingData.service = "อบไอน้ำสมุนไพร";
+          bookingData.service = (currentLang === 'en') ? "Herbal Steam" : "อบไอน้ำสมุนไพร";
           bookingData.staff = "ห้องอบไอน้ำ";
       } else {
           bookingData.service = document.getElementById('inp-service').value;
@@ -946,15 +1209,15 @@
       
       let staffRowHtml = '';
       if (currentApp === 'ttm') {
-          let labelStaff = (bookingData.staff !== "ไม่ระบุ") ? bookingData.staff : "ไม่ระบุ (ใครก็ได้)";
-          staffRowHtml = `<div class="summary-row"><div class="summary-label">ผู้ให้บริการ:</div><div class="summary-val" style="color:var(--primary)">${labelStaff}</div></div>`;
+          let labelStaff = (bookingData.staff !== "ไม่ระบุ" && bookingData.staff !== "Unspecified") ? bookingData.staff : t('unspecified_any');
+          staffRowHtml = `<div class="summary-row"><div class="summary-label">${t('lbl_provider')}:</div><div class="summary-val" style="color:var(--primary)">${labelStaff}</div></div>`;
       }
 
       let extraTimeHtml = '';
       if (bookingData.is2Hr && currentApp === 'ttm') {
           extraTimeHtml = `<div class="summary-row" style="margin-top:5px; background:#fffbeb; padding:8px; border-radius:12px; border:1px solid #f59e0b;">
                                <div class="summary-val" style="color:#b45309; font-weight:700;">
-                                 <i class="fas fa-clock"></i> นัดจอง 2 ชม. (ชำระเพิ่ม 200บ.)
+                                 <i class="fas fa-clock"></i> ${t('book_2hr')}
                                </div>
                              </div>`;
       }
@@ -962,15 +1225,16 @@
       let html = `
         <div class="summary-row" style="margin-bottom:4px;"><div class="summary-val" style="font-size:1.1rem;">${bookingData.name}</div></div>
         <div class="summary-row"><div class="summary-val" style="color:#64748b;">${bookingData.tel}</div></div>
-        <div class="summary-row" style="margin-top:12px;"><div class="summary-label">แผนก:</div><div class="summary-val">${bookingData.dept}</div></div>
-        <div class="summary-row"><div class="summary-label">บริการ:</div><div class="summary-val">${bookingData.service}</div></div>
+        <div class="summary-row" style="margin-top:12px;"><div class="summary-label">${t('dept')}:</div><div class="summary-val">${bookingData.dept}</div></div>
+        <div class="summary-row"><div class="summary-label">${t('service')}:</div><div class="summary-val">${bookingData.service}</div></div>
         ${staffRowHtml}
-        <div class="summary-row"><div class="summary-label">วันเวลา:</div><div class="summary-val">${bookingData.date} เวลา ${bookingData.time} น.</div></div>
+        <div class="summary-row"><div class="summary-label">${t('datetime')}:</div><div class="summary-val">${bookingData.date} ${bookingData.time}</div></div>
         ${extraTimeHtml}
-        <div class="summary-row" style="white-space: pre-wrap;"><div class="summary-label">รายละเอียด:</div><div class="summary-val">${bookingData.extraInfo}</div></div>
-        <div class="summary-row"><div class="summary-label">หมายเหตุ:</div><div class="summary-val">${bookingData.note}</div></div>
+        <div class="summary-row" style="white-space: pre-wrap;"><div class="summary-label">${t('details')}:</div><div class="summary-val">${bookingData.extraInfo}</div></div>
+        <div class="summary-row"><div class="summary-label">${t('note')}:</div><div class="summary-val">${bookingData.note}</div></div>
       `;
       document.getElementById('summary-content').innerHTML = html;
+      document.getElementById('warning-text-content').innerHTML = t('warning_msg');
       switchStep('step-summary');
     }
 
@@ -1002,9 +1266,8 @@
         // หาบริการที่เลือก
         let serviceName = document.getElementById('inp-service').value;
         if (!serviceName && (currentApp === 'postpartum' || currentApp === 'steam')) {
-             // กรณี Postpartum/Steam ไม่มี Dropdown ให้ดึงค่าจากตัวแปรตรงๆ
-             if (currentApp === 'postpartum') serviceName = "บริการมารดาหลังคลอด";
-             if (currentApp === 'steam') serviceName = "อบไอน้ำสมุนไพร";
+             if (currentApp === 'postpartum') serviceName = (currentLang === 'en') ? "Postpartum Care" : "บริการมารดาหลังคลอด";
+             if (currentApp === 'steam') serviceName = (currentLang === 'en') ? "Herbal Steam" : "อบไอน้ำสมุนไพร";
         }
 
         if (!serviceName) return;
@@ -1014,16 +1277,22 @@
         
         let price = "-";
         
+        let priceList = (currentLang === 'en') ? SERVICE_PRICES_EN : SERVICE_PRICES;
+        let priceWellness = (currentLang === 'en') ? WELLNESS_PRICES_EN : WELLNESS_PRICES;
+
         // ดึงข้อมูล
-        if (SERVICE_PRICES[currentApp] && SERVICE_PRICES[currentApp][cleanName]) {
-            price = SERVICE_PRICES[currentApp][cleanName];
+        if (priceList[currentApp] && priceList[currentApp][cleanName]) {
+            price = priceList[currentApp][cleanName];
         } else {
              // Fallback กรณีหาไม่เจอจริงๆ หรือเป็น Wellness แบบเก่า
              if (currentApp === 'wellness') {
-                 if (serviceName.includes("1,000")) price = "1,000 บาท";
-                 else if (serviceName.includes("500")) price = "500 บาท";
-                 else if (serviceName.includes("650")) price = "650 บาท";
-                 else if (serviceName.includes("550")) price = "550 บาท";
+                 if (serviceName.includes("1,000")) price = "1,000";
+                 else if (serviceName.includes("500")) price = "500";
+                 else if (serviceName.includes("650")) price = "650";
+                 else if (serviceName.includes("550")) price = "550";
+                 
+                 // Add Unit
+                 if (price !== "-" && !price.includes(t('Baht')) && !price.includes('.-')) price += (currentLang === 'en') ? " THB" : " บาท";
              }
         }
 
@@ -1044,8 +1313,9 @@
         let is2Hr = document.getElementById('inp-2hr') ? document.getElementById('inp-2hr').checked : false;
         if (is2Hr) {
              let currentText = document.getElementById('price-val').innerHTML;
-             if (!currentText.includes("+200")) {
-                 document.getElementById('price-val').innerHTML = currentText + " <span style='color:#e65100; display:block; margin-top:2px;'>(+200 บาท ชม.ถัดไป)</span>";
+             let addTxt = (currentLang === 'en') ? "(+200 THB next hr)" : "(+200 บาท ชม.ถัดไป)";
+             if (!currentText.includes("200")) {
+                 document.getElementById('price-val').innerHTML = currentText + ` <span style='color:#e65100; display:block; margin-top:2px;'>${addTxt}</span>`;
              }
         }
     }
@@ -1070,4 +1340,3 @@
   </script>
 </body>
 </html>
-
