@@ -711,7 +711,7 @@
         "รัตน์ชนก KW": "รัตน์ชนก (กวาง)", "จินดา J": "จินดา (เจี๊ยบ)"
     };
     
-    // --- NEW: English Name Mapping ---
+    // --- NEW: English Name Mapping (ที่ต้องการ) ---
     const STAFF_NAME_MAP_EN = {
         "รจนา M": "Rotjana (Maam)", "อรรถพล B": "Attapon (Bao)", "ศินารัตน์ C": "Sinarat (C)",
         "จุฑามาศ F": "Jutamat (Fon)", "ณิชาภัทร W": "Nichapat (Wawa)", "นิกษ์นิภา T": "Niknipha (Kartoon)",
@@ -961,6 +961,7 @@
         else { box.style.display = 'none'; chk.checked = false; }
     }
 
+    // --- ฟังก์ชันแสดงรายชื่อพนักงาน ---
     function renderStaffList(availableStaffList) {
         const optionsContainer = document.getElementById('staff-options');
         optionsContainer.innerHTML = '';
@@ -970,11 +971,13 @@
                     </div>`;
         if (availableStaffList && availableStaffList.length > 0) {
             availableStaffList.forEach(sheetName => {
-                // --- UPDATE: Logic เลือกภาษาชื่อพนักงาน ---
+                // *** UPDATE: Logic เลือกภาษาชื่อพนักงาน (TH/EN) ***
                 let displayName;
+                // ถ้าเป็นภาษาอังกฤษ และมีชื่อใน Map EN ให้ใช้ชื่อนั้น
                 if (currentLang === 'en' && STAFF_NAME_MAP_EN[sheetName]) {
                     displayName = STAFF_NAME_MAP_EN[sheetName];
                 } else {
+                    // ถ้าไม่ใช่ ให้ใช้ชื่อเดิม หรือ Mapping ภาษาไทย
                     displayName = STAFF_NAME_MAP[sheetName] || sheetName;
                 }
                 
