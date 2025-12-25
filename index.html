@@ -6,6 +6,7 @@
   <title>จองคิวออนไลน์ รพ.สะเดา</title>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
   <style>
     /* --- CSS Variables & Reset --- */
@@ -19,6 +20,9 @@
         --wellness-primary: #D4AF37; 
         --wellness-dark: #AA8C2C;
         --wellness-text: #423818;
+        --imc-primary: #9c27b0; 
+        --imc-dark: #7b1fa2;
+        --imc-bg: #f3e5f5;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Prompt', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; min-height: 100vh; color: #333; position: relative; overflow-x: hidden; }
@@ -28,23 +32,11 @@
 
     /* --- Language Button --- */
     .lang-btn {
-        position: fixed;
-        top: 15px;
-        right: 15px;
-        z-index: 9999;
-        background: rgba(255, 255, 255, 0.9);
-        border: 2px solid var(--primary);
-        color: var(--primary);
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-weight: bold;
-        font-family: 'Prompt', sans-serif;
-        cursor: pointer;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 5px;
+        position: fixed; top: 15px; right: 15px; z-index: 9999;
+        background: rgba(255, 255, 255, 0.9); border: 2px solid var(--primary); color: var(--primary);
+        padding: 5px 12px; border-radius: 20px; font-weight: bold; font-family: 'Prompt', sans-serif;
+        cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.2s;
+        display: flex; align-items: center; gap: 5px;
     }
     .lang-btn:hover { background: var(--primary); color: white; }
     .lang-btn img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
@@ -72,6 +64,11 @@
     .card-wellness::after { background: linear-gradient(to bottom, #D4AF37, #AA8C2C); }
     .card-wellness h3 { color: #AA8C2C !important; }
     .card-wellness:hover .arrow-btn { background: #D4AF37; }
+
+    /* IMC Card Style */
+    .card-imc { border-left-color: var(--imc-primary); }
+    .card-imc::after { background: var(--imc-primary); }
+    .card-imc:hover .arrow-btn { background: var(--imc-primary); color:white; }
 
     .dept-icon { width: 60px; height: 60px; border-radius: 50%; margin-right: 20px; object-fit: cover; border: 4px solid #f1f5f9; }
     .dept-info h3 { margin: 0 0 6px 0; font-size: 1.2rem; font-weight: 700; color: #1e293b; }
@@ -104,6 +101,9 @@
     .date-chip.active { background: white; color: var(--day-color); transform: scale(1.1); font-weight: bold; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
     .date-chip.active::after { content:''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: var(--day-color); }
 
+    /* --- FIX: IMC Date Scroller Style --- */
+    #imc-date-scroller .date-chip.active { color: var(--imc-primary) !important; }
+    
     .container { max-width: 600px; margin: 0 auto; padding: 0 15px 80px; }
     .selected-date-header { font-size: 1.1rem; font-weight: 700; color: #334155; padding: 25px 5px 15px; display: flex; align-items: center; }
     .header-bar { width: 6px; height: 24px; border-radius: 4px; margin-right: 12px; background-color: var(--primary); }
@@ -114,6 +114,28 @@
     .slot-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; }
     .is-available::before { background: #4caf50; }
     .is-full::before { background: #ef4444; }
+
+    /* IMC Specific UI */
+    .imc-setup-box { margin: -20px 15px 15px 15px; background: white; border-radius: 20px; padding: 20px; box-shadow: var(--shadow-md); position: relative; z-index: 10; border: 1px solid #f3e5f5; }
+    .imc-toggle-group { display: flex; gap: 8px; background: #f8fafc; padding: 5px; border-radius: 12px; margin-bottom: 15px; }
+    .imc-toggle { flex: 1; text-align: center; padding: 10px 5px; border-radius: 10px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
+    .imc-toggle span { display: block; font-weight: 700; font-size: 0.9rem; }
+    .imc-toggle small { font-size: 0.75rem; color: #666; }
+    .imc-toggle.active { background: white; color: var(--imc-primary); border-color: var(--imc-primary); box-shadow: var(--shadow-sm); }
+    .imc-options { display: flex; justify-content: space-around; padding-top: 5px; }
+    .imc-checkbox { display: flex; align-items: center; gap: 8px; font-weight: 500; color: #555; cursor: pointer; }
+    .imc-checkbox input { accent-color: var(--imc-primary); width: 18px; height: 18px; }
+
+    .imc-slot-card { background: white; border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; border-left: 6px solid #ccc; box-shadow: var(--shadow-sm); transition: 0.2s; }
+    .imc-slot-card:active { transform: scale(0.98); }
+    .imc-slot-card.available { border-left-color: #4caf50; }
+    .imc-slot-card.full { border-left-color: #ff9800; background: #fffdf5; }
+    
+    .imc-time { font-size: 1.4rem; font-weight: 700; color: #333; }
+    .imc-flow-badge { background: #f3e5f5; color: var(--imc-primary); font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-top: 4px; font-weight: 500; }
+    .imc-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+    .imc-btn-book { background: var(--imc-bg); color: var(--imc-primary); }
+    .imc-btn-full { background: #fff3e0; color: #ff9800; cursor: not-allowed; }
 
     .gender-male { background: #e3f2fd !important; border-color: #90caf9 !important; }
     .gender-male::before { background: #1976d2 !important; }
@@ -221,7 +243,6 @@
     </div>
 
     <div class="menu-container">
-        
         <div class="dept-card card-ttm" onclick="openApp('ttm')">
           <img src="https://img2.pic.in.th/pic/619e72dc2124132ccf4620717d4fa58d.md.png" class="dept-icon">
           <div class="dept-info"><h3 data-i18n="ttm_title">แพทย์แผนไทย</h3><p data-i18n="ttm_desc">นวดรักษา, ประคบ, นวดส่งเสริมฯ</p></div>
@@ -253,6 +274,17 @@
                 <p data-i18n="well_desc">สครับเกลือ, สปาผิว, นวดอโรม่า</p>
             </div>
             <div class="arrow-btn"><i class="fas fa-chevron-right"></i></div>
+        </div>
+
+        <div class="dept-card card-imc" onclick="openIMCSetup()">
+           <div style="width:60px; height:60px; background:#f3e5f5; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-right:20px; border:4px solid #f8fafc; color:var(--imc-primary); font-size:1.8rem;">
+              <i class="fas fa-wheelchair"></i>
+           </div>
+           <div class="dept-info">
+              <h3 data-i18n="imc_title">ฟื้นฟูสภาพกลุ่มผู้ป่วย IMC</h3>
+              <p style="color:var(--imc-primary); font-size:0.85rem;" data-i18n="imc_desc">โรคหลอดเลือดสมอง Stroke ไม่เกิน 6 เดือน (นับจากวันเริ่มฟื้นฟู)</p>
+           </div>
+           <div class="arrow-btn"><i class="fas fa-chevron-right"></i></div>
         </div>
 
         <div class="info-card">
@@ -293,6 +325,41 @@
         <div style="font-size:0.85rem; color:#94a3b8; margin-top:12px;"><span data-i18n="call">โทร</span>: 084-267-1735 <span data-i18n="or">หรือ</span> 074-379-994</div>
       </div>
     </div>
+  </div>
+
+  <div id="view-imc-setup" class="hidden">
+      <div class="top-section" style="background: linear-gradient(135deg, var(--imc-primary), var(--imc-dark));">
+          <div class="back-btn" onclick="closeIMC()"><i class="fas fa-arrow-left"></i></div>
+          <div class="header-content">
+             <div class="app-logo" style="background:#f3e5f5; display:flex; align-items:center; justify-content:center; color:var(--imc-primary); font-size:1.5rem;">
+                 <i class="fas fa-wheelchair"></i>
+             </div>
+             <div class="header-titles">
+                 <h1 data-i18n="imc_title">ฟื้นฟูสภาพกลุ่มผู้ป่วย IMC</h1>
+                 <p data-i18n="sched_realtime">ตารางนัดแบบบูรณาการ</p>
+             </div>
+          </div>
+          <div id="imc-date-scroller" class="date-scroller" style="margin-top:15px;"></div>
+          <div id="selected-date-display" style="text-align:center; color:rgba(255,255,255,0.9); font-size:0.9rem; margin-top:5px;"></div>
+      </div>
+      
+      <div class="container" style="padding-top:20px;">
+          <div class="imc-setup-box">
+              <div class="imc-toggle-group">
+                  <div id="pt-1.5" class="imc-toggle active" onclick="changePT(1.5)"><span>กายภาพ</span><small>1.5 ชม.</small></div>
+                  <div id="pt-1" class="imc-toggle" onclick="changePT(1)"><span>กายภาพ</span><small>1.0 ชม.</small></div>
+                  <div id="pt-0" class="imc-toggle" onclick="changePT(0)"><span>ไม่ทำ</span><small>กายภาพ</small></div>
+              </div>
+              <div class="imc-options">
+                  <label class="imc-checkbox"><input type="checkbox" id="chk_ttm" checked onchange="searchIMCSlots()"> +นวดไทย</label>
+                  <label class="imc-checkbox"><input type="checkbox" id="chk_tcm" checked onchange="searchIMCSlots()"> +ฝังเข็ม</label>
+              </div>
+          </div>
+          
+          <div id="imc-results" style="padding:0 10px;">
+              <div style="text-align:center; padding:40px; color:#ccc;">กรุณาเลือกวันที่</div>
+          </div>
+      </div>
   </div>
 
   <div id="bookingModal" class="modal-overlay">
@@ -397,6 +464,20 @@
            <div style="font-size:0.8rem; color:#64748b; margin-top:5px;" data-i18n="limit_patient">*เพิ่มได้ไม่เกินจำนวนคิวว่างในรอบนี้</div>
         </div>
 
+        <div id="imc-fields" class="hidden">
+            <div style="background:#f3e5f5; padding:15px; border-radius:12px; border:1px solid #e1bee7; margin-bottom:15px;">
+                <label class="form-label" style="color:var(--imc-primary); margin-bottom:5px;">รายละเอียดแผนการรักษา:</label>
+                <div id="imc-plan-detail" style="font-weight:600; white-space:pre-line; color:#4a148c; line-height:1.6;"></div>
+            </div>
+            <div style="background:#fffbeb; padding:10px; border-radius:12px; border:1px solid #fcd34d; margin-bottom:20px; font-size:0.85rem; color:#92400e;">
+                <i class="fas fa-info-circle"></i> <b>สิทธิการรักษา:</b> เบิกได้ตามสิทธิรักษา ยกเว้น <b>สิทธิประกันสังคม</b>
+                <ul style="margin:5px 0 0 15px; padding:0;">
+                    <li>นวดและประคบเพื่อการฟื้นฟู 250 บาท</li>
+                    <li>ฝังเข็ม 150 - 200 บาท</li>
+                </ul>
+            </div>
+        </div>
+
         <div class="form-group">
           <label class="form-label" id="lbl-note" data-i18n="lbl_note">หมายเหตุ (ถ้ามี)</label>
           <textarea id="inp-note" class="form-control" placeholder="เช่น กระดูกหัก/ผ่าตัด ในช่วง 3 เดือนนี้, กำลังมีประจำเดือน ,มีไข้สูง" data-i18n-ph="ph_note"></textarea>
@@ -435,170 +516,111 @@
 
   <script>
     // **********************************************************
-    // Language Configuration
+    // ⚠️ 1. ใส่ URL Web App ของคุณ (ที่ Deploy เป็น 'Execute as me' / 'Anyone')
+    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbxMVqlYGeuj75wQm41kZCD4wf2weZajj27b0omuC6HlHzWja4sJYz6HF6m5b5nlmSUMtw/exec";
+    
+    // ⚠️ 2. ใส่ Line ID
+    const LINE_OA_ID = "@649dqeft";
     // **********************************************************
+
     let currentLang = 'th'; // Default language
+    let currentApp = ''; 
+    let globalData = [];
+    let bookingData = {};
+    let refreshInterval;
+    let selectedIndex = 0;
+    let isFetching = false;
+    let nextSlotStaffList = [];
+    let currentSlotCapacity = 0;
+    let patientCount = 1;
+
+    // IMC Variables
+    let currentPT = 1.5;
+    let selectedDateStr = "";
+
+    const SafeStorage = {
+        getItem: function(key) { try { return localStorage.getItem(key); } catch(e) { return null; } },
+        setItem: function(key, val) { try { localStorage.setItem(key, val); } catch(e) { } }
+    };
 
     const translations = {
         th: {
-            dept_ttm_alt: "กลุ่มงานการแพทย์แผนไทยและการแพทย์ทางเลือก",
-            hospital_name: "โรงพยาบาลสะเดา",
-            online_24: "ระบบออนไลน์ 24 ชม.",
-            ttm_title: "แพทย์แผนไทย",
-            ttm_desc: "นวดรักษา, ประคบ, นวดส่งเสริมฯ",
-            tcm_title: "แพทย์แผนจีน",
-            tcm_desc: "ฝังเข็ม, ครอบแก้ว, ฝังเข็มใบหน้า",
-            pp_title: "บริการหลังคลอด",
-            pp_desc: "หลังคลอดธรรมชาติ 7 วัน / หลังผ่า 1 เดือน",
-            steam_title: "อบไอน้ำสมุนไพร",
-            steam_desc: "ช่วยการไหลเวียนโลหิต ภูมิแพ้ นอนไม่หลับ",
+            dept_ttm_alt: "กลุ่มงานการแพทย์แผนไทยและการแพทย์ทางเลือก", hospital_name: "โรงพยาบาลสะเดา", online_24: "ระบบออนไลน์ 24 ชม.",
+            ttm_title: "แพทย์แผนไทย", ttm_desc: "นวดรักษา, ประคบ, นวดส่งเสริมฯ",
+            tcm_title: "แพทย์แผนจีน", tcm_desc: "ฝังเข็ม, ครอบแก้ว, ฝังเข็มใบหน้า",
+            pp_title: "บริการหลังคลอด", pp_desc: "หลังคลอดธรรมชาติ 7 วัน / หลังผ่า 1 เดือน",
+            steam_title: "อบไอน้ำสมุนไพร", steam_desc: "ช่วยการไหลเวียนโลหิต ภูมิแพ้ นอนไม่หลับ",
             well_desc: "สครับเกลือ, สปาผิว, นวดอโรม่า",
-            building_info: "ตึกอุบัติเหตุ 4 ชั้น (ตึกมรกต)",
-            floor_info: "สถานที่ให้บริการแพทย์แผนไทย ชั้น 4",
-            sched_realtime: "ตารางนัด (Real-time)",
-            contact_channel: "ช่องทางติดต่อ",
-            call: "โทร",
-            or: "หรือ",
-            form_title: "กรอกข้อมูลจองคิว",
-            use_old_data: "ใช้ข้อมูลเดิม",
-            lbl_name: "ชื่อ-นามสกุล",
-            ph_name: "เช่น ใจดี มีสุข",
-            lbl_tel: "เบอร์โทรศัพท์",
-            lbl_service: "เลือกบริการ",
-            rate_rights: "อัตราค่าบริการ/สิทธิ:",
-            lbl_provider: "ผู้ให้บริการ (ผู้ช่วยแพทย์แผนไทย)",
-            unspecified: "ไม่ระบุ",
-            unspecified_any: "ไม่ระบุ (ใครก็ได้)",
-            book_2hr: "จองต่อเนื่อง 2 ชั่วโมง (ว่าง)",
-            note_2hr: "*ชั่วโมงที่ 2 ชำระเพิ่ม 200 บาท",
-            lbl_birthdate: "วันเดือนปี ที่คลอด",
-            lbl_delivery_type: "ประเภทการคลอด",
-            pl_select: "-- กรุณาเลือก --",
-            natural_birth: "คลอดเองตามธรรมชาติ",
-            c_section: "ผ่าตัดคลอด",
-            lbl_hospital: "คลอดโรงพยาบาลอะไร",
-            ph_hospital: "ระบุชื่อโรงพยาบาล",
+            building_info: "ตึกอุบัติเหตุ 4 ชั้น (ตึกมรกต)", floor_info: "สถานที่ให้บริการแพทย์แผนไทย ชั้น 4",
+            sched_realtime: "ตารางนัด (Real-time)", contact_channel: "ช่องทางติดต่อ", call: "โทร", or: "หรือ",
+            form_title: "กรอกข้อมูลจองคิว", use_old_data: "ใช้ข้อมูลเดิม",
+            lbl_name: "ชื่อ-นามสกุล", ph_name: "เช่น ใจดี มีสุข",
+            lbl_tel: "เบอร์โทรศัพท์", lbl_service: "เลือกบริการ",
+            rate_rights: "อัตราค่าบริการ/สิทธิ:", lbl_provider: "ผู้ให้บริการ (ผู้ช่วยแพทย์แผนไทย)",
+            unspecified: "ไม่ระบุ", unspecified_any: "ไม่ระบุ (ใครก็ได้)",
+            book_2hr: "จองต่อเนื่อง 2 ชั่วโมง (ว่าง)", note_2hr: "*ชั่วโมงที่ 2 ชำระเพิ่ม 200 บาท",
+            lbl_birthdate: "วันเดือนปี ที่คลอด", lbl_delivery_type: "ประเภทการคลอด", pl_select: "-- กรุณาเลือก --",
+            natural_birth: "คลอดเองตามธรรมชาติ", c_section: "ผ่าตัดคลอด",
+            lbl_hospital: "คลอดโรงพยาบาลอะไร", ph_hospital: "ระบุชื่อโรงพยาบาล",
             sso_fee: "เฉพาะสิทธิ <strong>ประกันสังคม</strong> มีค่าบริการ 500 บาท",
-            lbl_gender: "เพศ",
-            female: "หญิง",
-            male: "ชาย",
-            lbl_extra_patient: "ผู้รับบริการเพิ่มเติม (ถ้ามี)",
-            btn_add_patient: "เพิ่มผู้รับบริการ",
+            lbl_gender: "เพศ", female: "หญิง", male: "ชาย",
+            lbl_extra_patient: "ผู้รับบริการเพิ่มเติม (ถ้ามี)", btn_add_patient: "เพิ่มผู้รับบริการ",
             limit_patient: "*เพิ่มได้ไม่เกินจำนวนคิวว่างในรอบนี้",
-            lbl_note: "หมายเหตุ (ถ้ามี)",
-            ph_note: "เช่น กระดูกหัก/ผ่าตัด ในช่วง 3 เดือนนี้...",
-            btn_cancel: "ยกเลิก",
-            btn_save: "บันทึก",
-            check_info: "ตรวจสอบข้อมูล",
-            btn_edit: "แก้ไข",
-            btn_confirm_booking: "ยืนยันการจอง",
-            ack_send: "รับทราบ & ส่งข้อมูลเข้าไลน์",
-            avail: "ว่าง",
-            queue: "คิว",
-            full: "เต็ม",
-            closed: "งด",
-            round_m: "รอบชาย",
-            round_f: "รอบหญิง",
-            loading: "กำลังโหลด...",
-            no_service: "⛔ งดให้บริการ",
-            no_slot: "ไม่มีรอบว่างในวันนี้",
-            dept: "แผนก",
-            service: "บริการ",
-            datetime: "วันเวลา",
-            details: "รายละเอียด",
-            note: "หมายเหตุ",
-            warning_msg: "<strong>โปรดทราบ!</strong><br>คิวจะถูกจองสำเร็จ<br>ต่อเมื่อเจ้าหน้าที่ <u>ตอบรับทางไลน์</u> แล้วเท่านั้น"
+            lbl_note: "หมายเหตุ (ถ้ามี)", ph_note: "เช่น กระดูกหัก/ผ่าตัด ในช่วง 3 เดือนนี้...",
+            btn_cancel: "ยกเลิก", btn_save: "บันทึก", check_info: "ตรวจสอบข้อมูล",
+            btn_edit: "แก้ไข", btn_confirm_booking: "ยืนยันการจอง", ack_send: "รับทราบ & ส่งข้อมูลเข้าไลน์",
+            avail: "ว่าง", queue: "คิว", full: "เต็ม", closed: "งด", round_m: "รอบชาย", round_f: "รอบหญิง",
+            loading: "กำลังโหลด...", no_service: "⛔ งดให้บริการ", no_slot: "ไม่มีรอบว่างในวันนี้",
+            dept: "แผนก", service: "บริการ", datetime: "วันเวลา", details: "รายละเอียด", note: "หมายเหตุ",
+            warning_msg: "<strong>โปรดทราบ!</strong><br>คิวจะถูกจองสำเร็จ<br>ต่อเมื่อเจ้าหน้าที่ <u>ตอบรับทางไลน์</u> แล้วเท่านั้น",
+            // IMC Translations
+            imc_title: "ฟื้นฟูสภาพกลุ่มผู้ป่วย IMC", imc_desc: "โรคหลอดเลือดสมอง Stroke ไม่เกิน 6 เดือน (นับจากวันเริ่มฟื้นฟู)"
         },
         en: {
-            dept_ttm_alt: "Thai Traditional & Alternative Medicine",
-            hospital_name: "Sadao Hospital",
-            online_24: "Online System 24 hrs.",
-            ttm_title: "Thai Traditional Medicine",
-            ttm_desc: "Treatment Massage, Compress, Health Massage",
-            tcm_title: "Chinese Medicine",
-            tcm_desc: "Acupuncture, Cupping, Facial Acupuncture",
-            pp_title: "Postpartum Care",
-            pp_desc: "Natural Birth 7 Days / C-Section 1 Month",
-            steam_title: "Herbal Steam",
-            steam_desc: "Circulation, Allergy, Insomnia",
+            dept_ttm_alt: "Thai Traditional & Alternative Medicine", hospital_name: "Sadao Hospital", online_24: "Online System 24 hrs.",
+            ttm_title: "Thai Traditional Medicine", ttm_desc: "Treatment Massage, Compress, Health Massage",
+            tcm_title: "Chinese Medicine", tcm_desc: "Acupuncture, Cupping, Facial Acupuncture",
+            pp_title: "Postpartum Care", pp_desc: "Natural Birth 7 Days / C-Section 1 Month",
+            steam_title: "Herbal Steam", steam_desc: "Circulation, Allergy, Insomnia",
             well_desc: "Salt Scrub, Skin Spa, Aroma Massage",
-            building_info: "Accident Building 4 Floors (Emerald Bldg)",
-            floor_info: "Service Location: 4th Floor",
-            sched_realtime: "Schedule (Real-time)",
-            contact_channel: "Contact Channels",
-            call: "Call",
-            or: "or",
-            form_title: "Booking Form",
-            use_old_data: "Use History",
-            lbl_name: "Full Name",
-            ph_name: "e.g. John Doe",
-            lbl_tel: "Phone Number",
-            lbl_service: "Select Service",
-            rate_rights: "Service Fee/Rights:",
-            lbl_provider: "Provider (TTM Assistant)",
-            unspecified: "Unspecified",
-            unspecified_any: "Any Provider",
-            book_2hr: "Book 2 Consecutive Hours (Avail)",
-            note_2hr: "*2nd Hour: Additional 200 THB",
-            lbl_birthdate: "Date of Birth (Baby)",
-            lbl_delivery_type: "Delivery Type",
-            pl_select: "-- Please Select --",
-            natural_birth: "Natural Birth",
-            c_section: "C-Section",
-            lbl_hospital: "Hospital Name",
-            ph_hospital: "Specify Hospital Name",
+            building_info: "Accident Building 4 Floors (Emerald Bldg)", floor_info: "Service Location: 4th Floor",
+            sched_realtime: "Schedule (Real-time)", contact_channel: "Contact Channels", call: "Call", or: "or",
+            form_title: "Booking Form", use_old_data: "Use History",
+            lbl_name: "Full Name", ph_name: "e.g. John Doe",
+            lbl_tel: "Phone Number", lbl_service: "Select Service",
+            rate_rights: "Service Fee/Rights:", lbl_provider: "Provider (TTM Assistant)",
+            unspecified: "Unspecified", unspecified_any: "Any Provider",
+            book_2hr: "Book 2 Consecutive Hours (Avail)", note_2hr: "*2nd Hour: Additional 200 THB",
+            lbl_birthdate: "Date of Birth (Baby)", lbl_delivery_type: "Delivery Type", pl_select: "-- Please Select --",
+            natural_birth: "Natural Birth", c_section: "C-Section",
+            lbl_hospital: "Hospital Name", ph_hospital: "Specify Hospital Name",
             sso_fee: "<strong>Social Security</strong> rights fee: 500 THB",
-            lbl_gender: "Gender",
-            female: "Female",
-            male: "Male",
-            lbl_extra_patient: "Additional Patients (If any)",
-            btn_add_patient: "Add Patient",
+            lbl_gender: "Gender", female: "Female", male: "Male",
+            lbl_extra_patient: "Additional Patients (If any)", btn_add_patient: "Add Patient",
             limit_patient: "*Cannot exceed available slots",
-            lbl_note: "Note (Optional)",
-            ph_note: "e.g. Broken bone/Surgery in last 3 months...",
-            btn_cancel: "Cancel",
-            btn_save: "Save",
-            check_info: "Verify Information",
-            btn_edit: "Edit",
-            btn_confirm_booking: "Confirm Booking",
-            ack_send: "Acknowledge & Send to LINE",
-            avail: "Avail",
-            queue: "Q",
-            full: "Full",
-            closed: "Closed",
-            round_m: "Male Round",
-            round_f: "Female Round",
-            loading: "Loading...",
-            no_service: "⛔ Service Closed",
-            no_slot: "No slots available today",
-            dept: "Department",
-            service: "Service",
-            datetime: "Date/Time",
-            details: "Details",
-            note: "Note",
-            warning_msg: "<strong>Please Note!</strong><br>Booking is confirmed<br>only after staff <u>reply via LINE</u>."
+            lbl_note: "Note (Optional)", ph_note: "e.g. Broken bone/Surgery in last 3 months...",
+            btn_cancel: "Cancel", btn_save: "Save", check_info: "Verify Information",
+            btn_edit: "Edit", btn_confirm_booking: "Confirm Booking", ack_send: "Acknowledge & Send to LINE",
+            avail: "Avail", queue: "Q", full: "Full", closed: "Closed", round_m: "Male Round", round_f: "Female Round",
+            loading: "Loading...", no_service: "⛔ Service Closed", no_slot: "No slots available today",
+            dept: "Department", service: "Service", datetime: "Date/Time", details: "Details", note: "Note",
+            warning_msg: "<strong>Please Note!</strong><br>Booking is confirmed<br>only after staff <u>reply via LINE</u>.",
+            // IMC Translations
+            imc_title: "IMC Rehabilitation", imc_desc: "Stroke patients < 6 months (from recovery start date)"
         }
     };
 
-    function t(key) {
-        return translations[currentLang][key] || key;
-    }
+    function t(key) { return translations[currentLang][key] || key; }
 
     function toggleLanguage() {
         currentLang = (currentLang === 'th') ? 'en' : 'th';
         document.getElementById('lang-text').innerText = currentLang.toUpperCase();
         
         // Update Static Text
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            el.innerHTML = t(el.getAttribute('data-i18n'));
-        });
-        
-        // Update Placeholders
-        document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-            el.placeholder = t(el.getAttribute('data-i18n-ph'));
-        });
+        document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n')); });
+        document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-ph')); });
 
-        // Update Dynamic Content (Header Title)
+        // Update Dynamic Content
         if (currentApp && APP_CONFIG[currentApp]) {
              let conf = APP_CONFIG[currentApp];
              document.getElementById('app-title').innerText = (currentLang === 'en') ? conf.titleEn : conf.title;
@@ -612,72 +634,14 @@
         }
     }
 
-    // **********************************************************
-    // URL Web App (Backend) ของคุณ
-    // **********************************************************
-    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbxuZ1uo7q2V6vnKddOdnmEO_L8QIh6q1btJdUtoUroVj8q4dIPmeGX6DJHYbGr7bmCD/exec";
-
-    const LINE_OA_ID = "@649dqeft";
-    
-    // --- อัปเดต: ตารางราคาและสิทธิการรักษา (ใหม่ล่าสุด) ---
-    const SERVICE_PRICES = {
-        ttm: {
-            "นวดและประคบเพื่อการรักษา": "เบิกได้ตามสิทธิ (ยกเว้นประกันสังคม ชำระเงินเอง 250 บาท)",
-            "นวดตัวส่งเสริมสุขภาพ(ชำระเงินเอง)": "200 บาท (เพิ่มประคบสมุนไพร +50 บาท)", 
-            "นวดเท้าส่งเสริมสุขภาพ(ชำระเงินเอง)": "200 บาท"
-        },
-        tcm: {
-            "ฝังเข็มเพื่อการรักษา": "สิทธิข้าราชการเบิกได้ / สิทธิอื่นชำระเงินเอง 150-200 บาท<br><small style='color:#666'>(สิทธิบัตรทองในกลุ่มIMC เบิกได้)</small>",
-            "ครอบแก้ว": "150 บาท",
-            "ฝังเข็มใบหน้า": "300 บาท",
-            "ปรึกษาแพทย์แผนจีน": "ฟรี"
-        },
-        postpartum: {
-            "บริการมารดาหลังคลอด": "เบิกได้ตามสิทธิ (ยกเว้นประกันสังคม ชำระเงินเอง 500 บาท)"
-        },
-        steam: {
-            "อบไอน้ำสมุนไพร": "เบิกได้ตามสิทธิ (ยกเว้นประกันสังคม ชำระเงินเอง 100 บาท)"
-        },
-        wellness: {
-            "สครับเกลือ": "500 บาท",
-            "สปาผิว": "650 บาท",
-            "นวดน้ำมันอโรม่า": "550 บาท"
-        }
-    };
-
-    // English Prices (Simple mapping for demo)
-    const SERVICE_PRICES_EN = {
-        ttm: {
-            "Treatment Massage": "Reimbursable (SSO self-pay 250 THB)",
-            "Health Massage": "200 THB (+Herbal Compress +50 THB)", 
-            "Foot Massage": "200 THB"
-        },
-        tcm: {
-            "Acupuncture": "Gov Reimbursable / Others 150-200 THB",
-            "Cupping": "150 THB",
-            "Facial Acupuncture": "300 THB",
-            "Consultation": "Free"
-        },
-        postpartum: {
-            "Postpartum Care": "Reimbursable (SSO self-pay 500 THB)"
-        },
-        steam: {
-            "Herbal Steam": "Reimbursable (SSO self-pay 100 THB)"
-        },
-        wellness: {
-            "Salt Scrub": "500 THB",
-            "Skin Spa": "650 THB",
-            "Aroma Massage": "550 THB"
-        }
-    };
-
-    // --- CONFIGURATION ---
     const APP_CONFIG = {
       ttm: { title: "แพทย์แผนไทย", titleEn: "Thai Traditional Medicine", logo: "https://img2.pic.in.th/pic/6f7b352408393a1295f3000e7d9e6754.md.png", color: "#2e7d32", dark: "#1b5e20", func: "getTTMData" },
       tcm: { title: "แพทย์แผนจีน", titleEn: "Chinese Medicine", logo: "https://img2.pic.in.th/pic/--06d2d95efaba2074.md.png", color: "#e53935", dark: "#b71c1c", func: "getTCMData" },
       postpartum: { title: "บริการหลังคลอด", titleEn: "Postpartum Care", logo: "https://img2.pic.in.th/pic/eb06897c542c79b64690c8e794fa84a4.png", color: "#ec4899", dark: "#be185d", func: "getPostpartumData" },
       steam: { title: "อบไอน้ำสมุนไพร", titleEn: "Herbal Steam", logo: "https://img2.pic.in.th/pic/-3b445847427fcbfd.png", color: "#0288d1", dark: "#01579b", func: "getSteamData" },
-      wellness: { title: "Wellness Clinic", titleEn: "Wellness Clinic", logo: "https://img2.pic.in.th/pic/Wellness-logo.png", color: "#D4AF37", dark: "#AA8C2C", func: "getWellnessData" }
+      wellness: { title: "Wellness Clinic", titleEn: "Wellness Clinic", logo: "https://img2.pic.in.th/pic/Wellness-logo.png", color: "#D4AF37", dark: "#AA8C2C", func: "getWellnessData" },
+      // IMC Added
+      imc: { title: "ฟื้นฟูสภาพกลุ่มผู้ป่วย IMC", titleEn: "IMC Rehabilitation", logo: "https://img2.pic.in.th/pic/6f7b352408393a1295f3000e7d9e6754.md.png", color: "#9c27b0", dark: "#7b1fa2", func: "" }
     };
 
     const SERVICE_OPTIONS = {
@@ -693,51 +657,36 @@
 
     const WELLNESS_PRICES = { "สครับเกลือ": "500.-", "สปาผิว": "650.-", "นวดน้ำมันอโรม่า": "550.-" };
     const WELLNESS_PRICES_EN = { "Salt Scrub": "500.-", "Skin Spa": "650.-", "Aroma Massage": "550.-" };
+    
+    // Price Maps
+    const SERVICE_PRICES = {
+        ttm: { "นวดและประคบเพื่อการรักษา": "เบิกได้ตามสิทธิ (ยกเว้นประกันสังคม ชำระเงินเอง 250 บาท)", "นวดตัวส่งเสริมสุขภาพ(ชำระเงินเอง)": "200 บาท (เพิ่มประคบสมุนไพร +50 บาท)", "นวดเท้าส่งเสริมสุขภาพ(ชำระเงินเอง)": "200 บาท" },
+        tcm: { "ฝังเข็มเพื่อการรักษา": "สิทธิข้าราชการเบิกได้ / สิทธิอื่นชำระเงินเอง 150-200 บาท<br><small style='color:#666'>(สิทธิบัตรทองในกลุ่มIMC เบิกได้)</small>", "ครอบแก้ว": "150 บาท", "ฝังเข็มใบหน้า": "300 บาท", "ปรึกษาแพทย์แผนจีน": "ฟรี" },
+        postpartum: { "บริการมารดาหลังคลอด": "เบิกได้ตามสิทธิ (ยกเว้นประกันสังคม ชำระเงินเอง 500 บาท)" },
+        steam: { "อบไอน้ำสมุนไพร": "เบิกได้ตามสิทธิ (ยกเว้นประกันสังคม ชำระเงินเอง 100 บาท)" },
+        wellness: WELLNESS_PRICES
+    };
+    const SERVICE_PRICES_EN = {
+        ttm: { "Treatment Massage": "Reimbursable (SSO self-pay 250 THB)", "Health Massage": "200 THB (+Herbal Compress +50 THB)", "Foot Massage": "200 THB" },
+        tcm: { "Acupuncture": "Gov Reimbursable / Others 150-200 THB", "Cupping": "150 THB", "Facial Acupuncture": "300 THB", "Consultation": "Free" },
+        postpartum: { "Postpartum Care": "Reimbursable (SSO self-pay 500 THB)" },
+        steam: { "Herbal Steam": "Reimbursable (SSO self-pay 100 THB)" },
+        wellness: WELLNESS_PRICES_EN
+    };
 
     const STAFF_IMAGES = {
-        "รจนา M": "https://img2.pic.in.th/pic/-b38b682db8ac596b.png",
-        "อรรถพล B": "https://img5.pic.in.th/file/secure-sv1/6b74e1ebb096c81368605ff43948dab4.png",
-        "ศินารัตน์ C": "https://img2.pic.in.th/pic/-df4e3c6f4a4b331f.png",
-        "จุฑามาศ F": "https://img5.pic.in.th/file/secure-sv1/709dfc05071615eaaf008ea63d1e037e.png",
-        "รัตน์ชนก KW": "https://img2.pic.in.th/pic/-83673d6d528be12a.png",
-        "นิกษ์นิภา T": "https://img5.pic.in.th/file/secure-sv1/-c4fe207fa6c04aa3.png",
-        "ณิชาภัทร W": "https://img2.pic.in.th/pic/1ef0aa325ccac37724897c9f2c10e5f4.png",
-        "จินดา J": "https://img2.pic.in.th/pic/93b060e9e4b3fc9a9070d5ac2768c879.png"
+        "รจนา M": "https://img2.pic.in.th/pic/-b38b682db8ac596b.png", "อรรถพล B": "https://img5.pic.in.th/file/secure-sv1/6b74e1ebb096c81368605ff43948dab4.png",
+        "ศินารัตน์ C": "https://img2.pic.in.th/pic/-df4e3c6f4a4b331f.png", "จุฑามาศ F": "https://img5.pic.in.th/file/secure-sv1/709dfc05071615eaaf008ea63d1e037e.png",
+        "รัตน์ชนก KW": "https://img2.pic.in.th/pic/-83673d6d528be12a.png", "นิกษ์นิภา T": "https://img5.pic.in.th/file/secure-sv1/-c4fe207fa6c04aa3.png",
+        "ณิชาภัทร W": "https://img2.pic.in.th/pic/1ef0aa325ccac37724897c9f2c10e5f4.png", "จินดา J": "https://img2.pic.in.th/pic/93b060e9e4b3fc9a9070d5ac2768c879.png"
     };
 
-    const STAFF_NAME_MAP = {
-        "รจนา M": "รจนา (แหม่ม)", "อรรถพล B": "อรรถพล (บ่าว)", "ศินารัตน์ C": "ศินารัตน์ (ซี)",
-        "จุฑามาศ F": "จุฑามาศ (ฝน)", "ณิชาภัทร W": "ณิชาภัทร (วาวา)", "นิกษ์นิภา T": "นิกษ์นิภา (ตูน)",
-        "รัตน์ชนก KW": "รัตน์ชนก (กวาง)", "จินดา J": "จินดา (เจี๊ยบ)"
-    };
-    
-    // --- NEW: English Name Mapping (ที่ต้องการ) ---
-    const STAFF_NAME_MAP_EN = {
-        "รจนา M": "Rotjana (Maam)", "อรรถพล B": "Attapon (Bao)", "ศินารัตน์ C": "Sinarat (C)",
-        "จุฑามาศ F": "Jutamat (Fon)", "ณิชาภัทร W": "Nichapat (Wawa)", "นิกษ์นิภา T": "Niknipha (Kartoon)",
-        "รัตน์ชนก KW": "Ratchanok (Kwang)", "จินดา J": "Jinda (Jeab)"
-    };
+    const STAFF_NAME_MAP = { "รจนา M": "รจนา (แหม่ม)", "อรรถพล B": "อรรถพล (บ่าว)", "ศินารัตน์ C": "ศินารัตน์ (ซี)", "จุฑามาศ F": "จุฑามาศ (ฝน)", "ณิชาภัทร W": "ณิชาภัทร (วาวา)", "นิกษ์นิภา T": "นิกษ์นิภา (ตูน)", "รัตน์ชนก KW": "รัตน์ชนก (กวาง)", "จินดา J": "จินดา (เจี๊ยบ)" };
+    const STAFF_NAME_MAP_EN = { "รจนา M": "Rotjana (Maam)", "อรรถพล B": "Attapon (Bao)", "ศินารัตน์ C": "Sinarat (C)", "จุฑามาศ F": "Jutamat (Fon)", "ณิชาภัทร W": "Nichapat (Wawa)", "นิกษ์นิภา T": "Niknipha (Kartoon)", "รัตน์ชนก KW": "Ratchanok (Kwang)", "จินดา J": "Jinda (Jeab)" };
     
     const DEFAULT_IMG = "https://img2.pic.in.th/pic/1c189d2a727f532d391a5ab0604ccd2f.png";
     const DAY_COLORS = [ "#FF5252", "#FFD740", "#E040FB", "#4CAF50", "#FF9800", "#2196F3", "#9C27B0" ];
-
-    const TIME_PAIRS = {
-        "08:30": "09:30", "09:30": "10:30", "13:00": "14:00", "14:00": "15:00", "17:00": "18:00",
-        "8:30": "9:30", "9:30": "10:30"
-    };
-
-    let currentApp = '', globalData = [], bookingData = {};
-    let refreshInterval;
-    let selectedIndex = 0;
-    let isFetching = false;
-    let nextSlotStaffList = [];
-    let currentSlotCapacity = 0;
-    let patientCount = 1;
-
-    const SafeStorage = {
-        getItem: function(key) { try { return localStorage.getItem(key); } catch(e) { return null; } },
-        setItem: function(key, val) { try { localStorage.setItem(key, val); } catch(e) { } }
-    };
+    const TIME_PAIRS = { "08:30": "09:30", "09:30": "10:30", "13:00": "14:00", "14:00": "15:00", "17:00": "18:00", "8:30": "9:30", "9:30": "10:30" };
 
     function startClock() {
       setInterval(() => {
@@ -745,74 +694,58 @@
         let locale = (currentLang === 'en') ? 'en-US' : 'th-TH';
         let dateStr = now.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
         let timeStr = now.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
-        
-        if (currentLang === 'th') {
-            let year = now.getFullYear() + 543;
-            dateStr = dateStr.replace(now.getFullYear(), year);
-        }
-        
-        let el = document.querySelector('#liveClock span');
-        if(el) el.innerText = `${dateStr} ${timeStr}`;
+        if (currentLang === 'th') { let year = now.getFullYear() + 543; dateStr = dateStr.replace(now.getFullYear(), year); }
+        let el = document.querySelector('#liveClock span'); if(el) el.innerText = `${dateStr} ${timeStr}`;
       }, 1000);
     }
     startClock();
 
+    // --- MAIN NAVIGATION ---
     function openApp(type) {
-      try {
-          if (!APP_CONFIG[type]) { alert("Error: Invalid Service Type (" + type + ")"); return; }
-          currentApp = type;
-          isFetching = false;
-          
-          let conf = APP_CONFIG[type];
-          document.documentElement.style.setProperty('--primary', conf.color);
-          document.documentElement.style.setProperty('--primary-dark', conf.dark);
-          
-          document.getElementById('app-title').innerText = (currentLang === 'en') ? conf.titleEn : conf.title;
-          document.getElementById('app-logo').src = conf.logo;
-          document.getElementById('view-home').classList.add('hidden');
-          document.getElementById('view-dashboard').classList.remove('hidden');
-          
-          selectedIndex = 0;
-          fetchData(true);
-          
-          if(refreshInterval) clearInterval(refreshInterval);
-          refreshInterval = setInterval(function() { fetchData(false); }, 10000);
-      } catch (err) { alert("เกิดข้อผิดพลาด: " + err.message); }
+      if (!APP_CONFIG[type]) { alert("Error: Invalid Service Type (" + type + ")"); return; }
+      currentApp = type;
+      isFetching = false;
+      
+      let conf = APP_CONFIG[type];
+      document.documentElement.style.setProperty('--primary', conf.color);
+      document.documentElement.style.setProperty('--primary-dark', conf.dark);
+      document.getElementById('app-title').innerText = (currentLang === 'en') ? conf.titleEn : conf.title;
+      document.getElementById('app-logo').src = conf.logo;
+      document.getElementById('view-home').classList.add('hidden');
+      document.getElementById('view-dashboard').classList.remove('hidden');
+      
+      selectedIndex = 0;
+      fetchData(true);
+      
+      if(refreshInterval) clearInterval(refreshInterval);
+      refreshInterval = setInterval(function() { fetchData(false); }, 10000);
     }
 
     function goHome() {
       if(refreshInterval) clearInterval(refreshInterval);
       document.getElementById('view-dashboard').classList.add('hidden');
+      document.getElementById('view-imc-setup').classList.add('hidden'); // ซ่อน IMC setup ถ้าเปิดอยู่
       document.getElementById('view-home').classList.remove('hidden');
       currentApp = '';
     }
 
+    // --- FETCH & RENDER (Original Logic) ---
     function fetchData(isFirstLoad) {
       if (isFetching || (!isFirstLoad && document.hidden)) return;
       isFetching = true;
-      if (isFirstLoad) {
-         document.getElementById('contentArea').innerHTML = `<div style="text-align:center;padding:50px;color:#999"><i class="fas fa-circle-notch fa-spin"></i> ${t('loading')}</div>`;
-      } else {
-         document.getElementById('loadingIndicator').classList.add('show');
-      }
+      if (isFirstLoad) { document.getElementById('contentArea').innerHTML = `<div style="text-align:center;padding:50px;color:#999"><i class="fas fa-circle-notch fa-spin"></i> ${t('loading')}</div>`; }
+      else { document.getElementById('loadingIndicator').classList.add('show'); }
 
       const actionName = APP_CONFIG[currentApp].func;
       fetch(`${API_ENDPOINT}?action=${actionName}`)
         .then(response => response.json())
         .then(data => {
-            if(data.status === 'error') {
-                console.error("API Error:", data.message);
-                return;
-            }
+            if(data.status === 'error') { console.error("API Error:", data.message); return; }
             renderApp(data, currentApp);
             document.getElementById('loadingIndicator').classList.remove('show');
             isFetching = false;
         })
-        .catch(err => {
-            console.error("Fetch failed", err);
-            document.getElementById('loadingIndicator').classList.remove('show');
-            isFetching = false;
-        });
+        .catch(err => { console.error("Fetch failed", err); document.getElementById('loadingIndicator').classList.remove('show'); isFetching = false; });
     }
 
     function renderApp(data, userObj) {
@@ -827,7 +760,6 @@
       let thDays = ["อา.","จ.","อ.","พ.","พฤ.","ศ.","ส."];
       let enDays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
       let days = (currentLang === 'en') ? enDays : thDays;
-
       globalData.forEach((d, i) => {
         let color = DAY_COLORS[d.dayOfWeek];
         let activeClass = (i === selectedIndex) ? 'active' : '';
@@ -847,58 +779,36 @@
       let day = globalData[index];
       let container = document.getElementById('contentArea');
       let dayColor = DAY_COLORS[day.dayOfWeek];
-      
-      // Update header date (Should ideally parse and reformat for EN, but keeping simple for now)
       let headerHtml = `<div class="selected-date-header"><span class="header-bar" style="background-color: ${dayColor}"></span>${day.fullLabel || day.displayDate}</div>`;
 
-      if (day.status === 'no_data') {
-        container.innerHTML = headerHtml + `<div style="text-align:center;padding:40px;color:#cbd5e1"><h3>${t('no_service')}</h3><p>${t('no_slot')}</p></div>`;
-        return;
-      }
+      if (day.status === 'no_data') { container.innerHTML = headerHtml + `<div style="text-align:center;padding:40px;color:#cbd5e1"><h3>${t('no_service')}</h3><p>${t('no_slot')}</p></div>`; return; }
 
       let html = headerHtml + '<div class="grid-container">';
       day.slots.forEach((slot, i) => {
         let val = slot.val ? slot.val.toString() : "";
         if (val === 'งด') return;
-
         let isFull = (val.includes('เต็ม') || val.includes('งด'));
         let displayVal = val;
-        
-        // Translate status
         if (val.includes('เต็ม')) displayVal = t('full');
-
         let count = slot.count || 0;
         let slotGender = slot.gender || "";
-
-        let genderClass = "";
-        let genderIcon = "";
+        let genderClass = "", genderIcon = "";
+        
         if (currentApp === 'steam' && slotGender !== "" && !isFull) {
-            if (slotGender.includes("ชาย")) {
-                genderClass = "gender-male";
-                genderIcon = `<div style="font-size:0.75rem; color:#1565c0;"><i class="fas fa-mars"></i> ${t('round_m')}</div>`;
-            } else if (slotGender.includes("หญิง")) {
-                genderClass = "gender-female";
-                genderIcon = `<div style="font-size:0.75rem; color:#ad1457;"><i class="fas fa-venus"></i> ${t('round_f')}</div>`;
-            }
+            if (slotGender.includes("ชาย")) { genderClass = "gender-male"; genderIcon = `<div style="font-size:0.75rem; color:#1565c0;"><i class="fas fa-mars"></i> ${t('round_m')}</div>`; }
+            else if (slotGender.includes("หญิง")) { genderClass = "gender-female"; genderIcon = `<div style="font-size:0.75rem; color:#ad1457;"><i class="fas fa-venus"></i> ${t('round_f')}</div>`; }
         }
 
-        if (!isFull) {
-            if (count > 0) {
-                let iconsHtml = '<div style="display:flex; margin-right:6px;">';
-                let displayCount = Math.min(count, 5);
-                for(let k=0; k < displayCount; k++) {
-                    iconsHtml += '<i class="fas fa-user" style="font-size:0.75rem; margin:0 1px; opacity:0.7;"></i>';
-                }
-                if (count > 5) iconsHtml += '<span style="font-size:0.8rem; opacity:0.7;">+</span>';
-                iconsHtml += '</div>';
-                let textHtml = `<span style="font-weight:600; font-size:0.9rem;">${t('avail')} ${count} ${t('queue')}</span>`;
-                displayVal = `<div style="display:flex; flex-direction:column; align-items:flex-end;">${genderIcon}<div style="display:flex; align-items:center;">${iconsHtml}${textHtml}</div></div>`;
-            }
+        if (!isFull && count > 0) {
+             let iconsHtml = '<div style="display:flex; margin-right:6px;">';
+             for(let k=0; k < Math.min(count, 5); k++) iconsHtml += '<i class="fas fa-user" style="font-size:0.75rem; margin:0 1px; opacity:0.7;"></i>';
+             if (count > 5) iconsHtml += '<span style="font-size:0.8rem; opacity:0.7;">+</span>';
+             iconsHtml += '</div>';
+             displayVal = `<div style="display:flex; flex-direction:column; align-items:flex-end;">${genderIcon}<div style="display:flex; align-items:center;">${iconsHtml}<span style="font-weight:600; font-size:0.9rem;">${t('avail')} ${count} ${t('queue')}</span></div></div>`;
         }
 
         let cardClass = isFull ? 'is-full' : 'is-available';
         if (!isFull && genderClass !== "") cardClass += " " + genderClass;
-
         let badgeClass = isFull ? 'bg-full' : 'bg-av';
         let icon = '<i class="fas fa-leaf"></i>';
         if (currentApp === 'tcm') icon = '<i class="fas fa-star"></i>';
@@ -916,6 +826,136 @@
       container.innerHTML = html + '</div>';
     }
 
+    // --- IMC NEW LOGIC (เพิ่มใหม่) ---
+    function openIMCSetup() {
+        currentApp = 'imc';
+        document.getElementById('view-home').classList.add('hidden');
+        document.getElementById('view-imc-setup').classList.remove('hidden');
+        renderIMCDates(); 
+        changePT(1.5);
+    }
+    function closeIMC() {
+        document.getElementById('view-imc-setup').classList.add('hidden');
+        document.getElementById('view-home').classList.remove('hidden');
+    }
+    function renderIMCDates() {
+       const scroller = document.getElementById('imc-date-scroller');
+       scroller.innerHTML = '';
+       const thDays = ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."];
+       const enDays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+       let days = (currentLang === 'en') ? enDays : thDays;
+       const today = new Date();
+       for (let i = 0; i < 14; i++) {
+           let d = new Date(); d.setDate(today.getDate() + i);
+           let dateVal = d.toISOString().split('T')[0];
+           
+           let box = document.createElement('div');
+           box.className = `date-chip ${i === 0 ? 'active' : ''}`; 
+           box.style.setProperty('--day-color', '#fff'); // Override
+           box.innerHTML = `<small>${days[d.getDay()]}</small><span>${d.getDate()}</span>`;
+           box.onclick = () => selectIMCDate(dateVal, box, d);
+           scroller.appendChild(box);
+           if (i === 0) { selectedDateStr = dateVal; updateDateDisplay(d); }
+       }
+    }
+    function selectIMCDate(dateVal, el, dObj) {
+       selectedDateStr = dateVal;
+       document.querySelectorAll('#imc-date-scroller .date-chip').forEach(b => b.classList.remove('active'));
+       el.classList.add('active');
+       updateDateDisplay(dObj);
+       searchIMCSlots(); 
+    }
+    function updateDateDisplay(d) {
+       const thMonthsFull = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+       const thDaysFull = ["วันอาทิตย์", "วันจันทร์", "วันอังคาร", "วันพุธ", "วันพฤหัสบดี", "วันศุกร์", "วันเสาร์"];
+       // Basic display for now, can be improved with lang check
+       let txt = `${thDaysFull[d.getDay()]}ที่ ${d.getDate()} ${thMonthsFull[d.getMonth()]} ${d.getFullYear() + 543}`;
+       document.getElementById('selected-date-display').innerText = txt;
+    }
+    function changePT(val) {
+       currentPT = val;
+       document.querySelectorAll('.imc-toggle').forEach(b => b.classList.remove('active'));
+       document.getElementById(`pt-${val}`).classList.add('active');
+       searchIMCSlots();
+    }
+    function searchIMCSlots() {
+       var needTTM = document.getElementById('chk_ttm').checked;
+       var needTCM = document.getElementById('chk_tcm').checked;
+       if(!selectedDateStr) return;
+       var dObj = new Date(selectedDateStr);
+       var thMonthFull = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+       var dateThai = `${dObj.getDate()} ${thMonthFull[dObj.getMonth()]}`;
+
+       var resDiv = document.getElementById('imc-results');
+       resDiv.innerHTML = '<div style="text-align:center; padding:40px; color:#9c27b0; display:flex; flex-direction:column; align-items:center; gap:10px;"><i class="fas fa-circle-notch fa-spin fa-2x"></i><span>กำลังค้นหาคิวที่ดีที่สุด...</span></div>';
+
+       fetch(API_ENDPOINT, {
+         method: 'POST',
+         body: JSON.stringify({ action: 'checkIMC', date: dateThai, ptDuration: currentPT, needTTM: needTTM, needTCM: needTCM })
+       })
+       .then(res => res.json())
+       .then(data => {
+           if(data.status === 'error') { resDiv.innerHTML = `<div style="color:red; text-align:center;">${data.message}</div>`; } 
+           else { renderIMCDashboard(data.slots); }
+       })
+       .catch(e => resDiv.innerHTML = `<div style="color:red; text-align:center;">เกิดข้อผิดพลาดในการเชื่อมต่อ</div>`);
+    }
+    function renderIMCDashboard(slots) {
+        var container = document.getElementById('imc-results');
+        container.innerHTML = '';
+        if(!slots || slots.length === 0) { container.innerHTML = '<div style="text-align:center; padding:40px; color:#999;"><i class="fas fa-calendar-times fa-3x" style="margin-bottom:10px; opacity:0.3;"></i><br>ไม่พบรอบที่ว่าง</div>'; return; }
+
+        slots.forEach(slot => {
+            let statusClass = slot.status; 
+            let isClickable = (slot.status === 'available');
+            let infoText = "", btnHtml = "", flowHtml = "";
+
+            if(slot.status === 'available') {
+                infoText = `เสร็จสิ้นประมาณ ${slot.plan.endTimeStr} น.`;
+                flowHtml = `<div class="imc-flow-badge">${slot.plan.flowType}</div>`;
+                btnHtml = `<div class="imc-btn imc-btn-book">จอง <i class="fas fa-chevron-right"></i></div>`;
+            } else if (slot.status === 'full') {
+                infoText = `<span style="color:#ff9800;">${slot.label}</span>`;
+                btnHtml = `<div class="imc-btn imc-btn-full">เต็ม</div>`;
+            } else {
+                infoText = `<span style="color:#ef4444;">${slot.label}</span>`;
+                btnHtml = `<div class="imc-btn" style="background:#eee;color:#999;">ไม่ได้</div>`;
+            }
+
+            let html = `
+            <div class="imc-slot-card ${statusClass}" onclick="${isClickable ? `prepareIMCBooking(${JSON.stringify(slot).replace(/"/g, '&quot;')})` : ''}">
+                <div>
+                    <div style="display:flex; align-items:baseline; gap:8px;">
+                        <div class="imc-time">${slot.time} น.</div>
+                        <div style="font-size:0.8rem; color:#888;">เริ่ม</div>
+                    </div>
+                    <div style="font-size:0.85rem; color:#666; margin-top:2px;">${infoText}</div>
+                    ${flowHtml}
+                </div>
+                ${btnHtml}
+            </div>`;
+            container.innerHTML += html;
+        });
+    }
+    function prepareIMCBooking(slot) {
+        currentApp = 'imc';
+        let ptText = (currentPT > 0) ? `ทำกายภาพบำบัด (${currentPT} ชม.)` : `ไม่ทำกายภาพบำบัด`;
+        let detail = `${ptText}\nเริ่มเวลา: ${slot.time} น.`;
+        if(slot.plan.tcmTime) detail += `\n- จีน: ${slot.plan.tcmTime} น.`;
+        if(slot.plan.ttmTime) detail += `\n- ไทย: ${slot.plan.ttmTime} น.`;
+        detail += `\n(เสร็จสิ้น: ${slot.plan.endTimeStr} น.)`;
+        
+        bookingData = { detail: detail, date: document.getElementById('selected-date-display').innerText, time: slot.time };
+        
+        document.getElementById('bookingModal').classList.add('show');
+        document.getElementById('normal-fields').classList.add('hidden');
+        document.getElementById('postpartum-fields').classList.add('hidden');
+        document.getElementById('steam-fields').classList.add('hidden');
+        document.getElementById('imc-fields').classList.remove('hidden');
+        document.getElementById('imc-plan-detail').innerText = detail;
+    }
+
+    // --- Common Functions ---
     function setupAutocomplete(inputId, listId, storageKey, keyName) {
         const input = document.getElementById(inputId);
         const list = document.getElementById(listId);
@@ -923,19 +963,14 @@
             const val = this.value.trim().toLowerCase();
             list.innerHTML = '';
             if (val.length === 0) { list.style.display = 'none'; return; }
-            
             let history = JSON.parse(SafeStorage.getItem(storageKey)) || [];
-            
             let matches = history.filter(item => item[keyName] && item[keyName].toLowerCase().includes(val));
             if (matches.length > 0) {
                 matches.forEach(m => {
                     const div = document.createElement('div');
                     div.className = 'autocomplete-item';
                     div.innerHTML = `<span><i class="fas fa-clock-rotate-left"></i></span> ${m[keyName]}`;
-                    div.addEventListener('click', function() {
-                        input.value = m[keyName];
-                        list.style.display = 'none';
-                    });
+                    div.addEventListener('click', function() { input.value = m[keyName]; list.style.display = 'none'; });
                     list.appendChild(div);
                 });
                 list.style.display = 'block';
@@ -956,252 +991,130 @@
         document.getElementById('staff-trigger').classList.remove('open');
         let box = document.getElementById('box-option-2hr');
         let chk = document.getElementById('inp-2hr');
-        
         if (can2Hr && currentApp === 'ttm') { box.style.display = 'block'; } 
         else { box.style.display = 'none'; chk.checked = false; }
     }
 
-    // --- ฟังก์ชันแสดงรายชื่อพนักงาน ---
     function renderStaffList(availableStaffList) {
         const optionsContainer = document.getElementById('staff-options');
         optionsContainer.innerHTML = '';
-        let html = `<div class="select-item" onclick="selectStaff('${t('unspecified')}', '${DEFAULT_IMG}', false)">
-                        <img src="${DEFAULT_IMG}" class="item-img" onerror="this.src='${DEFAULT_IMG}'">
-                        <div class="item-text">${t('unspecified_any')}</div>
-                    </div>`;
+        let html = `<div class="select-item" onclick="selectStaff('${t('unspecified')}', '${DEFAULT_IMG}', false)"><img src="${DEFAULT_IMG}" class="item-img"><div class="item-text">${t('unspecified_any')}</div></div>`;
         if (availableStaffList && availableStaffList.length > 0) {
             availableStaffList.forEach(sheetName => {
-                // *** UPDATE: Logic เลือกภาษาชื่อพนักงาน (TH/EN) ***
                 let displayName;
-                // ถ้าเป็นภาษาอังกฤษ และมีชื่อใน Map EN ให้ใช้ชื่อนั้น
-                if (currentLang === 'en' && STAFF_NAME_MAP_EN[sheetName]) {
-                    displayName = STAFF_NAME_MAP_EN[sheetName];
-                } else {
-                    // ถ้าไม่ใช่ ให้ใช้ชื่อเดิม หรือ Mapping ภาษาไทย
-                    displayName = STAFF_NAME_MAP[sheetName] || sheetName;
-                }
-                
+                // English Name Mapping Logic
+                if (currentLang === 'en' && STAFF_NAME_MAP_EN[sheetName]) { displayName = STAFF_NAME_MAP_EN[sheetName]; } else { displayName = STAFF_NAME_MAP[sheetName] || sheetName; }
                 let img = STAFF_IMAGES[sheetName] || DEFAULT_IMG;
                 let is2HrAvailable = nextSlotStaffList.includes(sheetName);
-                
-                html += `<div class="select-item" onclick="selectStaff('${displayName}', '${img}', ${is2HrAvailable})">
-                            <img src="${img}" class="item-img" onerror="this.src='${DEFAULT_IMG}'">
-                            <div class="item-text" style="flex:1;">${displayName}</div>
-                            ${is2HrAvailable ? `<div class="badge-2hr"><i class="fas fa-check-circle"></i> ${t('avail')} 2h</div>` : ''}
-                        </div>`;
+                html += `<div class="select-item" onclick="selectStaff('${displayName}', '${img}', ${is2HrAvailable})"><img src="${img}" class="item-img"><div class="item-text" style="flex:1;">${displayName}</div>${is2HrAvailable ? `<div class="badge-2hr"><i class="fas fa-check-circle"></i> ${t('avail')} 2h</div>` : ''}</div>`;
             });
         }
         optionsContainer.innerHTML = html;
         selectStaff(t('unspecified'), DEFAULT_IMG, false);
     }
 
-    function loadUserData() {
-        let history = JSON.parse(SafeStorage.getItem('ttm_booking_history')) || [];
-        document.getElementById('btn-use-old').style.display = (history.length > 0) ? 'inline-flex' : 'none';
-    }
-    function saveUserData(name, tel) {
-        if(!name || !tel) return;
-        let history = JSON.parse(SafeStorage.getItem('ttm_booking_history')) || [];
-        history = history.filter(item => item.name !== name);
-        history.unshift({ name: name, tel: tel });
-        if (history.length > 5) history.pop();
-        SafeStorage.setItem('ttm_booking_history', JSON.stringify(history));
-    }
-    function fillUserData() {
-        let history = JSON.parse(SafeStorage.getItem('ttm_booking_history')) || [];
-        if (history.length > 0) {
-            document.getElementById('inp-name').value = history[0].name;
-            document.getElementById('inp-tel').value = history[0].tel;
-        }
-    }
+    function loadUserData() { let history = JSON.parse(SafeStorage.getItem('ttm_booking_history')) || []; document.getElementById('btn-use-old').style.display = (history.length > 0) ? 'inline-flex' : 'none'; }
+    function saveUserData(name, tel) { if(!name || !tel) return; let history = JSON.parse(SafeStorage.getItem('ttm_booking_history')) || []; history = history.filter(item => item.name !== name); history.unshift({ name: name, tel: tel }); if (history.length > 5) history.pop(); SafeStorage.setItem('ttm_booking_history', JSON.stringify(history)); }
+    function fillUserData() { let history = JSON.parse(SafeStorage.getItem('ttm_booking_history')) || []; if (history.length > 0) { document.getElementById('inp-name').value = history[0].name; document.getElementById('inp-tel').value = history[0].tel; } }
 
     function openBooking(time, dateFull, dayIndex, staffList, availableCount, slotGender) {
       try {
           bookingData = { dept: (currentLang === 'en' ? APP_CONFIG[currentApp].titleEn : APP_CONFIG[currentApp].title), date: dateFull, time: time, is2Hr: false };
           currentSlotCapacity = availableCount || 0;
+          document.getElementById('inp-name').value = ''; document.getElementById('inp-tel').value = ''; document.getElementById('inp-note').value = ''; document.getElementById('inp-2hr').checked = false; document.getElementById('box-option-2hr').style.display = 'none'; document.getElementById('price-tag').style.display = 'none'; document.querySelector('.modal-card').scrollTop = 0;
           
-          document.getElementById('inp-name').value = '';
-          document.getElementById('inp-tel').value = '';
-          document.getElementById('inp-note').value = '';
-          document.getElementById('inp-2hr').checked = false;
-          document.getElementById('box-option-2hr').style.display = 'none';
-          
-          // ซ่อนป้ายราคาของเก่า
-          document.getElementById('price-tag').style.display = 'none';
-
-          document.querySelector('.modal-card').scrollTop = 0;
-
           document.getElementById('normal-fields').classList.add('hidden');
           document.getElementById('postpartum-fields').classList.add('hidden');
           document.getElementById('steam-fields').classList.add('hidden');
+          document.getElementById('imc-fields').classList.add('hidden');
 
           nextSlotStaffList = [];
           let nextTime = TIME_PAIRS[time];
           if (nextTime) {
               let dayData = globalData[dayIndex];
               let nextSlot = dayData.slots.find(s => s.time === nextTime);
-              if (nextSlot && nextSlot.val && !nextSlot.val.includes('เต็ม') && !nextSlot.val.includes('งด')) {
-                  nextSlotStaffList = nextSlot.staff || [];
-              }
+              if (nextSlot && nextSlot.val && !nextSlot.val.includes('เต็ม') && !nextSlot.val.includes('งด')) { nextSlotStaffList = nextSlot.staff || []; }
           }
 
           if (currentApp === 'postpartum') {
               document.getElementById('postpartum-fields').classList.remove('hidden');
               bookingData.staff = "ทีมหลังคลอด";
               bookingData.service = (currentLang === 'en') ? "Postpartum Care" : "บริการมารดาหลังคลอด";
-              
-              // เรียกให้โชว์ราคาของ Postpartum ทันที
-              document.getElementById('inp-service').value = bookingData.service;
-              updatePriceDisplay();
-
+              document.getElementById('inp-service').value = bookingData.service; updatePriceDisplay();
           } else if (currentApp === 'steam') {
               document.getElementById('steam-fields').classList.remove('hidden');
               bookingData.staff = "ห้องอบไอน้ำ";
               bookingData.service = (currentLang === 'en') ? "Herbal Steam" : "อบไอน้ำสมุนไพร";
-              document.getElementById('extra-patients-container').innerHTML = '';
-              patientCount = 1;
-              
-              if (slotGender && slotGender.includes('ชาย')) {
-                 document.getElementById('inp-gender').value = 'ชาย'; // Value stays thai for logic
-              } else if (slotGender && slotGender.includes('หญิง')) {
-                 document.getElementById('inp-gender').value = 'หญิง';
-              }
-              
-              // เรียกให้โชว์ราคาของ Steam ทันที
-              document.getElementById('inp-service').value = bookingData.service;
-              updatePriceDisplay();
-
+              document.getElementById('extra-patients-container').innerHTML = ''; patientCount = 1;
+              if (slotGender && slotGender.includes('ชาย')) { document.getElementById('inp-gender').value = 'ชาย'; } else if (slotGender && slotGender.includes('หญิง')) { document.getElementById('inp-gender').value = 'หญิง'; }
+              document.getElementById('inp-service').value = bookingData.service; updatePriceDisplay();
           } else {
               document.getElementById('normal-fields').classList.remove('hidden');
-              
-              let select = document.getElementById('inp-service');
-              select.innerHTML = '';
-              
+              let select = document.getElementById('inp-service'); select.innerHTML = '';
               if (currentApp === 'wellness') {
-                  document.getElementById('group-staff').classList.add('hidden');
-                  document.getElementById('inp-staff-val').value = "Wellness Center";
-                  
-                  // Use translated list if possible
-                  let sourceList = (currentLang === 'en' && staffList) ? staffList.map(s => {
-                      // Map Thai keys to English
-                      if(s == "สครับเกลือ") return "Salt Scrub";
-                      if(s == "สปาผิว") return "Skin Spa";
-                      if(s == "นวดน้ำมันอโรม่า") return "Aroma Massage";
-                      return s;
-                  }) : staffList;
-
+                  document.getElementById('group-staff').classList.add('hidden'); document.getElementById('inp-staff-val').value = "Wellness Center";
+                  let sourceList = (currentLang === 'en' && staffList) ? staffList.map(s => { if(s == "สครับเกลือ") return "Salt Scrub"; if(s == "สปาผิว") return "Skin Spa"; if(s == "นวดน้ำมันอโรม่า") return "Aroma Massage"; return s; }) : staffList;
                   if (sourceList && sourceList.length > 0) {
                       sourceList.forEach(s => {
                           let price = (currentLang === 'en') ? (WELLNESS_PRICES_EN[s] || "") : (WELLNESS_PRICES[s] || "");
                           let displayLabel = price ? `${s} (${price})` : s;
-                          
-                          let opt = document.createElement('option');
-                          opt.value = displayLabel; // Value contains name
-                          opt.innerText = displayLabel;
-                          select.appendChild(opt);
-
-                          // Check 2HR logic (Keep Thai name for check logic)
-                          let thaiName = s;
-                          if (currentLang === 'en') {
-                             if(s == "Skin Spa") thaiName = "สปาผิว";
-                          }
-
-                          if (thaiName === "สปาผิว" && nextSlotStaffList.includes("สปาผิว")) {
-                              let opt2 = document.createElement('option');
-                              let txt = (currentLang === 'en') ? `Skin Spa (2 hr 1,000.-)` : `สปาผิว (2 ชม. 1,000.-)`;
-                              opt2.value = txt;
-                              opt2.innerText = txt;
-                              opt2.style.fontWeight = "bold";
-                              opt2.style.color = "#b45309";
-                              select.appendChild(opt2);
-                          }
+                          let opt = document.createElement('option'); opt.value = displayLabel; opt.innerText = displayLabel; select.appendChild(opt);
+                          let thaiName = s; if (currentLang === 'en') { if(s == "Skin Spa") thaiName = "สปาผิว"; }
+                          if (thaiName === "สปาผิว" && nextSlotStaffList.includes("สปาผิว")) { let opt2 = document.createElement('option'); let txt = (currentLang === 'en') ? `Skin Spa (2 hr 1,000.-)` : `สปาผิว (2 ชม. 1,000.-)`; opt2.value = txt; opt2.innerText = txt; opt2.style.fontWeight = "bold"; opt2.style.color = "#b45309"; select.appendChild(opt2); }
                       });
-                  } else {
-                      let opt = document.createElement('option'); opt.innerText = t('no_service'); select.appendChild(opt);
-                  }
-
+                  } else { let opt = document.createElement('option'); opt.innerText = t('no_service'); select.appendChild(opt); }
               } else {
                  let options = (currentLang === 'en') ? SERVICE_OPTIONS_EN[currentApp] : SERVICE_OPTIONS[currentApp];
-                 if (options) {
-                       options.forEach(s => {
-                         let opt = document.createElement('option'); opt.value = s; opt.innerText = s; select.appendChild(opt);
-                       });
-                 }
+                 if (options) { options.forEach(s => { let opt = document.createElement('option'); opt.value = s; opt.innerText = s; select.appendChild(opt); }); }
               }
-              
-              // เรียกให้โชว์ราคาของบริการแรกใน list ทันที
               updatePriceDisplay();
           }
 
           if (currentApp === 'ttm') {
-              if (staffList && staffList.length > 0) {
-                  document.getElementById('group-staff').classList.remove('hidden');
-                  renderStaffList(staffList);
-              } else {
-                  document.getElementById('group-staff').classList.add('hidden');
-                  document.getElementById('inp-staff-val').value = "-";
-              }
+              if (staffList && staffList.length > 0) { document.getElementById('group-staff').classList.remove('hidden'); renderStaffList(staffList); } else { document.getElementById('group-staff').classList.add('hidden'); document.getElementById('inp-staff-val').value = "-"; }
           } else if (currentApp === 'tcm') {
-              document.getElementById('group-staff').classList.add('hidden');
-              document.getElementById('inp-staff-val').value = (currentLang === 'en') ? "TCM Doctor" : "แพทย์แผนจีน";
+              document.getElementById('group-staff').classList.add('hidden'); document.getElementById('inp-staff-val').value = (currentLang === 'en') ? "TCM Doctor" : "แพทย์แผนจีน";
           }
-
-          loadUserData();
-          switchStep('step-form');
-          document.getElementById('bookingModal').classList.add('show');
-      } catch (e) {
-          console.error(e);
-          alert("Error: " + e.message);
-      }
+          loadUserData(); switchStep('step-form'); document.getElementById('bookingModal').classList.add('show');
+      } catch (e) { console.error(e); alert("Error: " + e.message); }
     }
 
     function addPatient() {
-       if (patientCount >= currentSlotCapacity) {
-           alert(t('limit_patient') + " (" + currentSlotCapacity + ")");
-           return;
-       }
+       if (patientCount >= currentSlotCapacity) { Swal.fire({ icon:'info', title:t('full'), text: t('limit_patient') + " (" + currentSlotCapacity + ")", confirmButtonColor: 'var(--primary)' }); return; }
        patientCount++;
        const container = document.getElementById('extra-patients-container');
        const div = document.createElement('div');
        div.className = 'extra-patient-item';
-       div.innerHTML = `
-          <div style="flex:1;">
-             <input type="text" class="form-control inp-extra-name" placeholder="${t('lbl_name')} ${patientCount}">
-          </div>
-          <div style="width:100px;">
-             <select class="form-control inp-extra-gender">
-                <option value="หญิง">${t('female')}</option>
-                <option value="ชาย">${t('male')}</option>
-             </select>
-          </div>
-          <button type="button" class="btn-remove" onclick="removePatient(this)"><i class="fas fa-trash"></i></button>
-       `;
+       div.innerHTML = `<div style="flex:1;"><input type="text" class="form-control inp-extra-name" placeholder="${t('lbl_name')} ${patientCount}"></div><div style="width:100px;"><select class="form-control inp-extra-gender"><option value="หญิง">${t('female')}</option><option value="ชาย">${t('male')}</option></select></div><button type="button" class="btn-remove" onclick="removePatient(this)"><i class="fas fa-trash"></i></button>`;
        container.appendChild(div);
     }
 
     function removePatient(btn) { btn.parentElement.remove(); patientCount--; }
     function closeModal() { document.getElementById('bookingModal').classList.remove('show'); }
-    function switchStep(id) {
-      ['step-form', 'step-summary', 'step-warning'].forEach(s => document.getElementById(s).classList.add('hidden'));
-      document.getElementById(id).classList.remove('hidden');
-    }
+    function switchStep(id) { ['step-form', 'step-summary', 'step-warning'].forEach(s => document.getElementById(s).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
 
     function goToSummary() {
       document.querySelector('.modal-card').scrollTop = 0;
       let name = document.getElementById('inp-name').value.trim();
       let tel = document.getElementById('inp-tel').value.trim();
-      if(!name || !tel) { alert((currentLang === 'en') ? 'Please enter Name and Phone' : 'กรุณากรอกชื่อและเบอร์โทรศัพท์'); return; }
       
+      // SweetAlert2 Validation
+      if(!name) { Swal.fire({ icon:'warning', title:(currentLang==='en'?'Required':'แจ้งเตือน'), text:(currentLang==='en'?'Name is required':'กรุณากรอกชื่อ-นามสกุล'), confirmButtonColor:'var(--primary)' }); return; }
+      if(!tel || !/^0\d{9}$/.test(tel.replace(/-/g,''))) { Swal.fire({ icon:'warning', title:(currentLang==='en'?'Invalid Phone':'แจ้งเตือน'), text:(currentLang==='en'?'Invalid phone format':'เบอร์โทรศัพท์ไม่ถูกต้อง (10 หลัก)'), confirmButtonColor:'var(--primary)' }); return; }
+
       bookingData.name = name;
       bookingData.tel = tel;
       bookingData.note = document.getElementById('inp-note').value.trim() || "-";
       bookingData.extraInfo = "";
 
-      if (currentApp === 'postpartum') {
+      if (currentApp === 'imc') {
+          // IMC Special Summary
+          bookingData.extraInfo = bookingData.detail; // Already set in prepareIMCBooking
+      } else if (currentApp === 'postpartum') {
           let birthDate = document.getElementById('inp-birth-date').value;
           let deliveryType = document.getElementById('inp-delivery-type').value;
           let hospital = document.getElementById('inp-hospital').value;
-          if(!birthDate || !hospital || !deliveryType) { alert((currentLang === 'en') ? 'Please fill all fields' : 'กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
+          if(!birthDate || !hospital || !deliveryType) { Swal.fire({ icon:'warning', text:(currentLang==='en'?'Please fill all fields':'กรุณากรอกข้อมูลให้ครบถ้วน'), confirmButtonColor:'var(--primary)' }); return; }
           bookingData.extraInfo = `\n${t('lbl_birthdate')}: ${birthDate}\n${t('lbl_delivery_type')}: ${deliveryType}\n${t('lbl_hospital')}: ${hospital}`;
       } else if (currentApp === 'steam') {
           let mainGender = document.getElementById('inp-gender').value;
@@ -1222,7 +1135,7 @@
       } else {
           bookingData.service = document.getElementById('inp-service').value;
           bookingData.staff = document.getElementById('inp-staff-val').value;
-          bookingData.is2Hr = document.getElementById('inp-2hr').checked;
+          bookingData.is2Hr = document.getElementById('inp-2hr') ? document.getElementById('inp-2hr').checked : false;
       }
       
       let staffRowHtml = '';
@@ -1233,18 +1146,16 @@
 
       let extraTimeHtml = '';
       if (bookingData.is2Hr && currentApp === 'ttm') {
-          extraTimeHtml = `<div class="summary-row" style="margin-top:5px; background:#fffbeb; padding:8px; border-radius:12px; border:1px solid #f59e0b;">
-                               <div class="summary-val" style="color:#b45309; font-weight:700;">
-                                 <i class="fas fa-clock"></i> ${t('book_2hr')}
-                               </div>
-                             </div>`;
+          extraTimeHtml = `<div class="summary-row" style="margin-top:5px; background:#fffbeb; padding:8px; border-radius:12px; border:1px solid #f59e0b;"><div class="summary-val" style="color:#b45309; font-weight:700;"><i class="fas fa-clock"></i> ${t('book_2hr')}</div></div>`;
       }
+
+      let appName = (currentApp === 'imc') ? (currentLang==='en'?'IMC Patient':'กลุ่มผู้ป่วย IMC') : bookingData.dept;
 
       let html = `
         <div class="summary-row" style="margin-bottom:4px;"><div class="summary-val" style="font-size:1.1rem;">${bookingData.name}</div></div>
         <div class="summary-row"><div class="summary-val" style="color:#64748b;">${bookingData.tel}</div></div>
-        <div class="summary-row" style="margin-top:12px;"><div class="summary-label">${t('dept')}:</div><div class="summary-val">${bookingData.dept}</div></div>
-        <div class="summary-row"><div class="summary-label">${t('service')}:</div><div class="summary-val">${bookingData.service}</div></div>
+        <div class="summary-row" style="margin-top:12px;"><div class="summary-label">${t('dept')}:</div><div class="summary-val">${appName}</div></div>
+        ${(currentApp !== 'imc') ? `<div class="summary-row"><div class="summary-label">${t('service')}:</div><div class="summary-val">${bookingData.service}</div></div>` : ''}
         ${staffRowHtml}
         <div class="summary-row"><div class="summary-label">${t('datetime')}:</div><div class="summary-val">${bookingData.date} ${bookingData.time}</div></div>
         ${extraTimeHtml}
@@ -1256,74 +1167,61 @@
       switchStep('step-summary');
     }
 
-    function backToForm() { switchStep('step-form'); }
     function confirmBooking() { saveUserData(bookingData.name, bookingData.tel); switchStep('step-warning'); }
 
     function sendToLine() {
       let msgStaff = (currentApp === 'ttm' && bookingData.staff) ? `\nผู้ให้บริการ: ${bookingData.staff}` : '';
       let msgExtra = (bookingData.is2Hr && currentApp === 'ttm') ? `\n**นัดจอง 2 ชม.** (ชำระเพิ่ม 200บ.)` : '';
       
-      let msg = `ขอจองคิว${bookingData.dept}\n${bookingData.name}\n${bookingData.tel}\nบริการ: ${bookingData.service}${msgStaff}\nวันที่: ${bookingData.date}\nเวลา: ${bookingData.time} น.${bookingData.extraInfo}\nหมายเหตุ: ${bookingData.note}${msgExtra}`;
+      let appName = (currentApp === 'imc') ? 'IMC Patient' : (bookingData.dept || currentApp.toUpperCase());
+      
+      let msg = `ขอจองคิว: ${appName}\n${bookingData.name}\n${bookingData.tel}\nวันที่: ${bookingData.date}\nเวลา: ${bookingData.time} น.`;
+      
+      if(currentApp === 'imc') {
+          msg += `\n\nรายละเอียดแผน:\n${bookingData.extraInfo}`;
+      } else {
+          msg += `\nบริการ: ${bookingData.service}${msgStaff}${bookingData.extraInfo ? '\n'+bookingData.extraInfo : ''}`;
+      }
+      msg += `\nหมายเหตุ: ${bookingData.note}${msgExtra}`;
       
       let dummy = document.createElement("textarea");
       document.body.appendChild(dummy); dummy.value = msg; dummy.select(); document.execCommand("copy"); document.body.removeChild(dummy);
       
-      let url = `https://line.me/R/oaMessage/${LINE_OA_ID}/?${encodeURIComponent(msg)}`;
-      
-      if (LINE_OA_ID && LINE_OA_ID.startsWith('@')) {
-          window.location.href = url;
-      } else {
-          alert("ระบบคัดลอกข้อมูลการจองแล้ว\nกรุณากด 'วาง' (Paste) ในแชท LINE");
-          window.location.href = "https://lin.ee/Ip6j7HP";
-      }
-      closeModal();
+      // SweetAlert Success & Redirect
+      Swal.fire({
+          icon: 'success',
+          title: (currentLang === 'en') ? 'Copied!' : 'คัดลอกข้อมูลแล้ว',
+          text: (currentLang === 'en') ? 'Redirecting to LINE app...' : 'กำลังพาท่านไปที่แอป LINE เพื่อวางข้อมูล...',
+          timer: 2000,
+          showConfirmButton: false
+      }).then(() => {
+          let url = `https://line.me/R/oaMessage/${LINE_OA_ID}/?${encodeURIComponent(msg)}`;
+          if (LINE_OA_ID && LINE_OA_ID.startsWith('@')) { window.location.href = url; } 
+          else { alert("Copied! Paste in Line."); window.location.href = "https://lin.ee/Ip6j7HP"; }
+          closeModal();
+      });
     }
 
-    // --- ฟังก์ชันอัปเดตราคา (ใหม่ล่าสุด) ---
     function updatePriceDisplay() {
-        // หาบริการที่เลือก
         let serviceName = document.getElementById('inp-service').value;
         if (!serviceName && (currentApp === 'postpartum' || currentApp === 'steam')) {
              if (currentApp === 'postpartum') serviceName = (currentLang === 'en') ? "Postpartum Care" : "บริการมารดาหลังคลอด";
              if (currentApp === 'steam') serviceName = (currentLang === 'en') ? "Herbal Steam" : "อบไอน้ำสมุนไพร";
         }
-
         if (!serviceName) return;
-
-        // ตัดวงเล็บราคาเก่าออก (เฉพาะเคส Wellness)
         let cleanName = serviceName.split(' (')[0]; 
-        
         let price = "-";
-        
         let priceList = (currentLang === 'en') ? SERVICE_PRICES_EN : SERVICE_PRICES;
-        let priceWellness = (currentLang === 'en') ? WELLNESS_PRICES_EN : WELLNESS_PRICES;
-
-        // ดึงข้อมูล
-        if (priceList[currentApp] && priceList[currentApp][cleanName]) {
-            price = priceList[currentApp][cleanName];
-        } else {
-             // Fallback กรณีหาไม่เจอจริงๆ หรือเป็น Wellness แบบเก่า
+        if (priceList[currentApp] && priceList[currentApp][cleanName]) { price = priceList[currentApp][cleanName]; } 
+        else {
              if (currentApp === 'wellness') {
-                 if (serviceName.includes("1,000")) price = "1,000";
-                 else if (serviceName.includes("500")) price = "500";
-                 else if (serviceName.includes("650")) price = "650";
-                 else if (serviceName.includes("550")) price = "550";
-                 
-                 // Add Unit
+                 if (serviceName.includes("1,000")) price = "1,000"; else if (serviceName.includes("500")) price = "500"; else if (serviceName.includes("650")) price = "650"; else if (serviceName.includes("550")) price = "550";
                  if (price !== "-" && !price.includes(t('Baht')) && !price.includes('.-')) price += (currentLang === 'en') ? " THB" : " บาท";
              }
         }
-
         let tag = document.getElementById('price-tag');
         let val = document.getElementById('price-val');
-        
-        if (price !== "-" && price !== undefined) {
-            val.innerHTML = price; 
-            tag.style.display = 'block';
-        } else {
-            tag.style.display = 'none';
-        }
-        
+        if (price !== "-" && price !== undefined) { val.innerHTML = price; tag.style.display = 'block'; } else { tag.style.display = 'none'; }
         update2HrPrice();
     }
 
@@ -1332,9 +1230,7 @@
         if (is2Hr) {
              let currentText = document.getElementById('price-val').innerHTML;
              let addTxt = (currentLang === 'en') ? "(+200 THB next hr)" : "(+200 บาท ชม.ถัดไป)";
-             if (!currentText.includes("200")) {
-                 document.getElementById('price-val').innerHTML = currentText + ` <span style='color:#e65100; display:block; margin-top:2px;'>${addTxt}</span>`;
-             }
+             if (!currentText.includes("200")) { document.getElementById('price-val').innerHTML = currentText + ` <span style='color:#e65100; display:block; margin-top:2px;'>${addTxt}</span>`; }
         }
     }
     
@@ -1342,17 +1238,16 @@
         let chk2hr = document.getElementById('inp-2hr');
         if(chk2hr) {
             chk2hr.addEventListener('change', update2HrPrice);
-            chk2hr.addEventListener('change', function() { 
-                 if(!this.checked) updatePriceDisplay(); // Reset
-            });
+            chk2hr.addEventListener('change', function() { if(!this.checked) updatePriceDisplay(); });
         }
     });
 
     document.addEventListener("visibilitychange", function() {
         if (document.visibilityState === 'visible' && currentApp !== '') {
              if(refreshInterval) clearInterval(refreshInterval);
-             fetchData(false);
-             refreshInterval = setInterval(function() { fetchData(false); }, 10000);
+             if(currentApp === 'imc') searchIMCSlots(); 
+             else fetchData(false);
+             refreshInterval = setInterval(function() { if(currentApp === 'imc') searchIMCSlots(); else fetchData(false); }, 10000);
         }
     });
   </script>
