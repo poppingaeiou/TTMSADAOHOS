@@ -403,14 +403,14 @@
             <div class="form-group" id="group-staff">
               <label class="form-label"><span data-i18n="lbl_provider">ผู้ให้บริการ (ผู้ช่วยแพทย์แผนไทย)</span></label>
               <div class="custom-select-wrapper">
-                 <div class="custom-select" id="staff-trigger" onclick="toggleStaffDropdown()">
-                     <div class="select-selected">
-                         <img id="staff-display-img" src="https://img2.pic.in.th/pic/1c189d2a727f532d391a5ab0604ccd2f.png" class="select-img" onerror="this.src='https://img2.pic.in.th/pic/1c189d2a727f532d391a5ab0604ccd2f.png'">
-                         <span id="staff-display-name" data-i18n="unspecified">ไม่ระบุ</span>
-                     </div>
-                     <i class="fas fa-chevron-down select-arrow"></i>
-                 </div>
-                 <div class="select-items" id="staff-options"></div>
+                  <div class="custom-select" id="staff-trigger" onclick="toggleStaffDropdown()">
+                      <div class="select-selected">
+                          <img id="staff-display-img" src="https://img2.pic.in.th/pic/1c189d2a727f532d391a5ab0604ccd2f.png" class="select-img" onerror="this.src='https://img2.pic.in.th/pic/1c189d2a727f532d391a5ab0604ccd2f.png'">
+                          <span id="staff-display-name" data-i18n="unspecified">ไม่ระบุ</span>
+                      </div>
+                      <i class="fas fa-chevron-down select-arrow"></i>
+                  </div>
+                  <div class="select-items" id="staff-options"></div>
               </div>
               <input type="hidden" id="inp-staff-val" value="ไม่ระบุ">
             </div>
@@ -469,12 +469,32 @@
                 <label class="form-label" style="color:var(--imc-primary); margin-bottom:5px;">รายละเอียดแผนการรักษา:</label>
                 <div id="imc-plan-detail" style="font-weight:600; white-space:pre-line; color:#4a148c; line-height:1.6;"></div>
             </div>
-            <div style="background:#fffbeb; padding:10px; border-radius:12px; border:1px solid #fcd34d; margin-bottom:20px; font-size:0.85rem; color:#92400e;">
-                <i class="fas fa-info-circle"></i> <b>สิทธิการรักษา:</b> เบิกได้ตามสิทธิรักษา ยกเว้น <b>สิทธิประกันสังคม</b>
-                <ul style="margin:5px 0 0 15px; padding:0;">
-                    <li>นวดและประคบเพื่อการฟื้นฟู 250 บาท</li>
-                    <li>ฝังเข็ม 150 - 200 บาท</li>
-                </ul>
+            
+            <div style="background:#ecfdf5; padding:12px 15px; border-radius:14px; border:1px solid #6ee7b7; margin-bottom:10px; display:flex; align-items:flex-start; gap:12px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
+                <div style="background:#10b981; color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">
+                    <i class="fas fa-check" style="font-size:0.8rem;"></i>
+                </div>
+                <div>
+                    <div style="color:#065f46; font-weight:700; font-size:1rem;">เบิกได้ตามสิทธิรักษา</div>
+                    <div style="color:#059669; font-size:0.85rem; margin-top:2px;">(ข้าราชการ / บัตรทอง / รัฐวิสาหกิจ)</div>
+                </div>
+            </div>
+
+            <div style="background:#fef2f2; padding:12px 15px; border-radius:14px; border:1px solid #fca5a5; margin-bottom:20px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px; border-bottom:1px solid #fecaca; padding-bottom:8px;">
+                     <div style="background:#ef4444; color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <i class="fas fa-exclamation" style="font-size:0.9rem;"></i>
+                    </div>
+                    <div style="color:#991b1b; font-weight:700; font-size:1rem;">ยกเว้น สิทธิประกันสังคม</div>
+                </div>
+                
+                <div style="padding-left:34px; font-size:0.9rem; color:#b91c1c;">
+                    <span style="font-weight:600;">ต้องชำระเงินเอง:</span>
+                    <ul style="margin:5px 0 0 0; padding-left:20px; line-height:1.5;">
+                        <li>นวดฟื้นฟู 250 บาท</li>
+                        <li>ฝังเข็ม 150 - 200 บาท</li>
+                    </ul>
+                </div>
             </div>
         </div>
 
