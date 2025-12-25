@@ -26,7 +26,7 @@
     .hidden { display: none !important; }
     .fade-in { animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
 
-    /* --- Language Button (NEW) --- */
+    /* --- Language Button --- */
     .lang-btn {
         position: fixed;
         top: 15px;
@@ -711,6 +711,13 @@
         "รัตน์ชนก KW": "รัตน์ชนก (กวาง)", "จินดา J": "จินดา (เจี๊ยบ)"
     };
     
+    // --- NEW: English Name Mapping ---
+    const STAFF_NAME_MAP_EN = {
+        "รจนา M": "Rotjana (Maam)", "อรรถพล B": "Attapon (Bao)", "ศินารัตน์ C": "Sinarat (C)",
+        "จุฑามาศ F": "Jutamat (Fon)", "ณิชาภัทร W": "Nichapat (Wawa)", "นิกษ์นิภา T": "Niknipha (Kartoon)",
+        "รัตน์ชนก KW": "Ratchanok (Kwang)", "จินดา J": "Jinda (Jeab)"
+    };
+    
     const DEFAULT_IMG = "https://img2.pic.in.th/pic/1c189d2a727f532d391a5ab0604ccd2f.png";
     const DAY_COLORS = [ "#FF5252", "#FFD740", "#E040FB", "#4CAF50", "#FF9800", "#2196F3", "#9C27B0" ];
 
@@ -963,9 +970,17 @@
                     </div>`;
         if (availableStaffList && availableStaffList.length > 0) {
             availableStaffList.forEach(sheetName => {
-                let displayName = STAFF_NAME_MAP[sheetName] || sheetName;
+                // --- UPDATE: Logic เลือกภาษาชื่อพนักงาน ---
+                let displayName;
+                if (currentLang === 'en' && STAFF_NAME_MAP_EN[sheetName]) {
+                    displayName = STAFF_NAME_MAP_EN[sheetName];
+                } else {
+                    displayName = STAFF_NAME_MAP[sheetName] || sheetName;
+                }
+                
                 let img = STAFF_IMAGES[sheetName] || DEFAULT_IMG;
                 let is2HrAvailable = nextSlotStaffList.includes(sheetName);
+                
                 html += `<div class="select-item" onclick="selectStaff('${displayName}', '${img}', ${is2HrAvailable})">
                             <img src="${img}" class="item-img" onerror="this.src='${DEFAULT_IMG}'">
                             <div class="item-text" style="flex:1;">${displayName}</div>
@@ -1105,9 +1120,9 @@
               } else {
                  let options = (currentLang === 'en') ? SERVICE_OPTIONS_EN[currentApp] : SERVICE_OPTIONS[currentApp];
                  if (options) {
-                      options.forEach(s => {
-                        let opt = document.createElement('option'); opt.value = s; opt.innerText = s; select.appendChild(opt);
-                      });
+                       options.forEach(s => {
+                         let opt = document.createElement('option'); opt.value = s; opt.innerText = s; select.appendChild(opt);
+                       });
                  }
               }
               
